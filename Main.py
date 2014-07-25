@@ -5,8 +5,12 @@ gb.pygame.init()
 gb.window.CreateWindow(900, 900)
 
 player = Entity(100, 100, 'guy.png')
-gb.entities.append(player)
+baddie = Enemy(300, 300, 'mummy.png')
+
+gb.entities.append(baddie)
 playing = True
+
+
 
 while playing:
     time_passed = gb.clock.tick(60) 
@@ -15,17 +19,15 @@ while playing:
         if e.type == gb.pygame.QUIT:
             playing = False
         if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_ESCAPE:
-            playing = False
-
-        else: 
-            player.update(e)
-
-
-        key = gb.pygame.key.get_pressed()
-    
+            playing = False 
+        move = e
+    key = gb.pygame.key.get_pressed()
+    player.update(move)
     for ents in gb.entities:
-       Enemy.update(ents)
-       Entity.render(ents)
+        ents.update()
+        ents.render()
+
+    player.render()
 
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')
