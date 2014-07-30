@@ -21,9 +21,12 @@ while playing:
             playing = False
         if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_ESCAPE:
             playing = False 
-        move = e
-    key = gb.pygame.key.get_pressed()
-    player.update(move)
+        
+    
+        player.update(e)
+   
+
+    player.move()
     cam.update(player.rect.center) 
     maps.render(cam)
     for ents in gb.entities:
