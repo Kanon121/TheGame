@@ -15,6 +15,8 @@ class Entity(object):
         self.movingD = False
         self.moving = False
         self.flipped = False
+        self.on_tile_x = 0
+        self.on_tile_y = 0
         self.image = gb.pygame.transform.scale(self.image,(50, 50))
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
 
@@ -22,6 +24,7 @@ class Entity(object):
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
+    
     def render(self):
         if self.flipped == True:
             gb.window.screen.blit(self.flippedImage, self.rect)
@@ -30,6 +33,7 @@ class Entity(object):
 
         
     def move(self):
+        
         if self.movingR == True:
             if self.flipped == False:
                 self.flipped = True
@@ -50,7 +54,15 @@ class Entity(object):
     
     
     def update(self, e):
-    
+
+ 
+        for block in blocks:
+            if self.rect.colliderect(block):
+                self.on_tile_x = block.grid_x
+                self.on_tile_y = block.grid_y
+                   
+
+
         if e.type == gb.pygame.KEYDOWN:
             if e.key == gb.pygame.K_RIGHT:
                 self.movingR = True
