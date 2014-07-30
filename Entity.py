@@ -15,6 +15,7 @@ class Entity(object):
         self.movingD = False
         self.moving = False
         self.flipped = False
+        self.image = gb.pygame.transform.scale(self.image,(50, 50))
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
 
 
@@ -32,12 +33,10 @@ class Entity(object):
         if self.movingR == True:
             if self.flipped == False:
                 self.flipped = True
-            print "dsadas"
             self.save_x = self.rect.x
             self.rect.x += 3
         if self.movingL == True:
             self.flipped = False
-            print "bcvbcbv"
             self.save_x = self.rect.x
             self.rect.x -= 3
         if self.movingD == True:
