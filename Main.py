@@ -1,17 +1,18 @@
 import Globals as gb
-from Entity import Entity
-from Entity import Enemy
+from FOV import FOV
+
 from Camera import Camera
-import Map as maps
 gb.pygame.init()
 gb.window.CreateWindow(gb.screen_height, gb.screen_width)
 
-player = Entity(100, 100, 'guy2.png')
 #baddie = Enemy(300, 300, 'mummy.png')
 #gb.entities.append(baddie)
+
+
 playing = True
 
-cam = Camera()
+fov = FOV()
+cam = Camera(0, 0, gb.screen_width, gb.screen_height)
 
 while playing:
     time_passed = gb.clock.tick(60) 
@@ -23,17 +24,18 @@ while playing:
             playing = False 
         
     
-        player.update(e)
-    cam.update(player.rect.center) 
-    maps.render(cam, player)    
-    player.move()
-
+        gb.player.update(e)
+    
+    fov.update(gb.player.rect.center) 
+    gb.maps.render(fov, cam)    
+    gb.player.move(cam)
+    cam.update() 
     for ents in gb.entities:
         ents.update()
         ents.render()
-
+         
     
-    player.render()
+    gb.player.render()
 
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')

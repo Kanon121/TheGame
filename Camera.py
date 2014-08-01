@@ -1,10 +1,10 @@
+
+from Map import level
 import Globals as gb
 class Camera(object):
-    def __init__(self):
-        self.rect = gb.pygame.Rect(0, 0, 300, 300)
-    
-    def update(self, center):
-        self.rect.center = center
-        #gb.pygame.draw.rect(gb.window.screen, (255, 10, 10), self.rect)
-
-
+    def __init__(self, x, y, screen_width, screen_height):
+        self.rect = gb.pygame.Rect(x, y, screen_width, screen_height)
+    def update(self):
+        self.rect.center = gb.player.rect.x, gb.player.rect.y    
+        print self.rect.center 
+        

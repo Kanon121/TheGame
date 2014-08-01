@@ -15,9 +15,7 @@ class Entity(object):
         self.movingD = False
         self.moving = False
         self.flipped = False
-        self.on_tile_x = 0
-        self.on_tile_y = 0
-        self.image = gb.pygame.transform.scale(self.image,(50, 50))
+        #self.image = gb.pygame.transform.scale(self.image,(50, 50))
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
 
 
@@ -32,8 +30,14 @@ class Entity(object):
             gb.window.screen.blit(self.image, self.rect)
 
         
-    def move(self):
-        
+    def move(self, cam):
+  
+        for block in blocks:
+            if self.rect.colliderect(block):
+                if block.is_wall == True:
+                    self.rect.x = self.save_x
+                    self.rect.y = self.save_y
+                
         if self.movingR == True:
             if self.flipped == False:
                 self.flipped = True
@@ -55,12 +59,7 @@ class Entity(object):
     
     def update(self, e):
 
- 
-        for block in blocks:
-            if self.rect.colliderect(block):
-                print "stuck!"
-                self.on_tile_x = block.grid_x
-                self.on_tile_y = block.grid_y
+
 
 
 
