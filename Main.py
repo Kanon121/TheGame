@@ -24,9 +24,10 @@ while playing:
         
     
         player.update(e)
-    player.move()
     cam.update(player.rect.center) 
-    maps.render(cam, player)
+    maps.render(cam, player)    
+    player.move()
+
     for ents in gb.entities:
         ents.update()
         ents.render()

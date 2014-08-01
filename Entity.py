@@ -49,8 +49,8 @@ class Entity(object):
             self.save_x = self.rect.x
             self.rect.x -= 3
     
-    
-    
+
+
     
     
     def update(self, e):
@@ -58,9 +58,10 @@ class Entity(object):
  
         for block in blocks:
             if self.rect.colliderect(block):
+                print "stuck!"
                 self.on_tile_x = block.grid_x
                 self.on_tile_y = block.grid_y
-                   
+
 
 
         if e.type == gb.pygame.KEYDOWN:

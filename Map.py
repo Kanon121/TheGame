@@ -41,6 +41,9 @@ class Blocks(object):
         self.remembered = False
         self.trans = False
         self.in_cam = False
+        self.touched = False
+        self.on_x = False
+        self.on_y = False
 
 def newImage(block, location, picture):
     block.pic = picture
@@ -48,6 +51,9 @@ def newImage(block, location, picture):
     block.image = gb.pygame.image.load(block.img_file)
     block.image = gb.pygame.transform.scale(block.image, (50, 50))
 
+    
+
+    
 new_blocks = []
 x = 0
 y = 0
@@ -66,6 +72,18 @@ for row in level.current_map:
             x += 50
             grid_x += 1
             new_blocks.append(block)
+        if block == "T":
+            block = Blocks()
+            block.rect.x = x
+            block.ID = 3
+            block.rect.y = y
+            block.grid_x = grid_x
+            block.grid_y = grid_y
+            x += 50
+            grid_x += 1
+            new_blocks.append(block)
+            block.grid_light_x = block.grid_x
+            block.grid_light_y = block.grid_y
         if block == '#':
             block = Blocks()
             block.ID = 1
@@ -75,6 +93,8 @@ for row in level.current_map:
             block.rect.y = y
             block.grid_x = grid_x
             block.grid_y = grid_y
+            block.grid_light_x = block.grid_x
+            block.grid_light_y = block.grid_y
             walls.append(block)
             x += 50
             grid_x += 1
@@ -86,37 +106,40 @@ for row in level.current_map:
             grid_y += 1
 
 
-
+light = gb.pygame.Rect(10, 10, 50, 50)
 def render(cam, player):
     for block in new_blocks:
         
-        block.grid_light_x = block.grid_x
-        block.grid_light_y = block.grid_y
+
         if block.rect.colliderect(cam):
             block.in_cam = True
-        if block.in_cam:
-            if block.grid_x >= player.on_tile_x:
-                if block.grid_y >= player.on_tile_y:
-                    if not block.grid_x == player.on_tile_x:
-                        block.grid_light_x -= 1
-                    if not block.grid_y == player.on_tile_y:
-                        block.grid_light_y -= 1
-                    
+        if block.ID == 3:
+            print "trying!"
+            if block.grid_light_x == player.on_tile_x:
+                block.on_x = True
+            if block.grid_light_y == player.on_tile_y:
+                block.on_y = True
+            if not block.on_x:
+                if block.grid_light_x >= player.on_tile_x:
+                    block.grid_light_x -= 1
+                if block.grid_light_x <= player.on_tile_x:
+                    block.grid_light_x += 1
+            if not block.on_y:
+                if block.grid_light_y >= player.on_tile_y:
+                    block.grid_light_y -= 1
+                if block.grid_light_y <= player.on_tile_y:
+                    block.grid_light_y += 1
+            if block.on_x and block.on_y:
+                block.on_x = False
+                block.on_y = False
+                block.grid_light_y = block.grid_y
+                block.grid_light_x = block.grid_x
 
             
-                    gb.window.screen.blit(block.image, block.rect)
-
-
-
-def testPos(x, y):
-    for block in new_blocks:
-        if block.grid_x == x and block.grid_y == y:
-            if block.is_wall:
-                print "wall!"
-
-
-
-
+            light.x = block.grid_light_x * 50
+            light.y = block.grid_light_y * 50           
+            gb.pygame.draw.rect(gb.window.screen, (255, 255, 255), light)
+        gb.window.screen.blit(block.image, block.rect)
 
 '''
         if block.rect.colliderect(cam):
