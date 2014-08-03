@@ -23,11 +23,13 @@ class Entity(object):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
     
-    def render(self):
+    def render(self, cam):
         if self.flipped == True:
-            gb.window.screen.blit(self.flippedImage, self.rect)
+            gb.window.screen.blit(self.flippedImage, (self.rect.x - cam.rect.x,
+        self.rect.y - cam.rect.y))
         else:
-            gb.window.screen.blit(self.image, self.rect)
+            gb.window.screen.blit(self.image, (self.rect.x - cam.rect.x,
+        self.rect.y - cam.rect.y))
 
         
     def move(self, cam):

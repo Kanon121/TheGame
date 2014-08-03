@@ -80,25 +80,29 @@ for row in level.current_map:
 
 def render(fov, cam):
     for block in new_blocks:
-        gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
+            gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
         block.rect.y - cam.rect.y))
         
+        
 
+"""
 
-
-    '''
         if block.rect.colliderect(cam):
             block.remembered = True
             if block.ID == 0:
                 if block.trans == True:
                     newImage(block, 'img', 'sand.png')
                     block.trans = False
-                gb.window.screen.blit(block.image, block.rect)
+                gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
+        block.rect.y - cam.rect.y))
+        
             if block.ID == 1:
                 if block.trans == True:
                     newImage(block, 'img', 'wall.png')
                     block.trans = False
-                gb.window.screen.blit(block.image, block.rect)
+                gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
+        block.rect.y - cam.rect.y))
+        
 
        
         if not block.rect.colliderect(cam):
@@ -110,6 +114,7 @@ def render(fov, cam):
                     if block.ID == 1:
                         newImage(block, 'img', 'wall_trans.png')
                         block.trans = True
-                gb.window.screen.blit(block.image, block.rect)
-             
-     '''          
+                gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
+        block.rect.y - cam.rect.y))
+        
+  """      

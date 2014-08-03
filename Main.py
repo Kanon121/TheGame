@@ -35,7 +35,7 @@ while playing:
         ents.render()
          
     
-    gb.player.render()
+    gb.player.render(cam)
 
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')
