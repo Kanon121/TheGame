@@ -26,9 +26,10 @@ while playing:
     
         gb.player.update(e)
     
-    fov.update(gb.player.rect.center) 
+   
     gb.maps.render(fov, cam)    
     gb.player.move(cam)
+    fov.update(gb.player.rect.center) 
     cam.update() 
     for ents in gb.entities:
         ents.update()

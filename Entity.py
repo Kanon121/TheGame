@@ -15,7 +15,6 @@ class Entity(object):
         self.movingD = False
         self.moving = False
         self.flipped = False
-        #self.image = gb.pygame.transform.scale(self.image,(50, 50))
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
 
 
