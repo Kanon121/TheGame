@@ -2,9 +2,6 @@ import Globals as gb
 from FOV import FOV
 
 from Camera import Camera
-gb.pygame.init()
-gb.window.CreateWindow(gb.screen_height, gb.screen_width)
-
 #baddie = Enemy(300, 300, 'mummy.png')
 #gb.entities.append(baddie)
 
@@ -29,7 +26,8 @@ while playing:
    
     gb.maps.render(fov, cam)    
     gb.player.move(cam)
-    fov.update(gb.player.rect.center) 
+    center = (gb.player.rect.x - cam.rect.x, gb.player.rect.y - cam.rect.y)
+    fov.update(center) 
     cam.update() 
     for ents in gb.entities:
         ents.update()

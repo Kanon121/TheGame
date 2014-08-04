@@ -51,6 +51,8 @@ class Entity(object):
             self.save_y = self.rect.y
             self.rect.y += 3
         if self.movingL == True:
+            if self.flipped == True:
+                self.flipped = False
             self.save_x = self.rect.x
             self.rect.x -= 3
     

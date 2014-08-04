@@ -31,7 +31,7 @@ class Blocks(object):
         self.is_wall = False
         self.pic = 'sand.png'
         self.img_file = os.path.join('img', self.pic)
-        self.image = gb.pygame.image.load(self.img_file)
+        self.image = gb.pygame.image.load(self.img_file).convert()
         self.rect = self.image.get_rect()
         self.remembered = False
         self.trans = False
@@ -56,48 +56,42 @@ for row in level.current_map:
         if block == '.':
             block = Blocks()
             block.pic = 'sand.png'
-            block.rect.x = x
-            block.rect.y = y
-            x += 50
-            new_blocks.append(block)
         if block == '#':
             block = Blocks()
             block.ID = 1
             block.is_wall = True
             newImage(block, 'img', 'wall.png')
-            block.rect.x = x
-            block.rect.y = y
-            walls.append(block)
-            x += 50
-
-            new_blocks.append(block)
+        block.rect.x = x
+        block.rect.y = y
+        x += 50
+        new_blocks.append(block)
         if x == len(level.current_map[0])*50:
             y += 50
             x = 0
 
 
-
-
 def render(fov, cam):
     for block in new_blocks:
-        
+         
         screenposX = (block.rect.x - cam.rect.x) / 50
         screenposY = (block.rect.y - cam.rect.y) / 50
-        if screenposX > 700 / 50:
+        if screenposX > 800 / 50:
             block.onScreen = False
-        elif screenposX < 0:
+        elif screenposX < -50:
             block.onScreen = False
-        elif screenposY > 700 / 50:
+        elif screenposY > 800 / 50:
             block.onScreen = False
-        elif screenposY < 0:
+        elif screenposY < -50:
             block.onScreen = False
             
         else:
             block.onScreen = True
  
- 
- 
- 
+        if block.onScreen == True:
+            block.image.convert_alpha()
+            gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
+                block.rect.y - cam.rect.y))
+""" 
         if block.onScreen:
             if block.rect.colliderect(fov):
                 block.remembered = True
@@ -126,5 +120,5 @@ def render(fov, cam):
                             block.trans = True
                     gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
             block.rect.y - cam.rect.y))
-        
+"""
        
