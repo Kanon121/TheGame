@@ -6,13 +6,19 @@ screen_height = 800
 pygame.init()
 window.CreateWindow(screen_height, screen_width)
 pygame.display.init()
+
 from Entity import Entity
 from Entity import Enemy
+player = Entity(50, 50, 'guy2.png')
+
+from Camera import Camera
+
+
+cam = Camera(0, 0, screen_width, screen_height)
 import Map as maps
 
 
 
-player = Entity(100, 100, 'guy2.png')
 
 clock = pygame.time.Clock()
 entities = []

@@ -1,5 +1,4 @@
 
-from Map import level
 import Globals as gb
 class Camera(object):
     def __init__(self, x, y, screen_width, screen_height):

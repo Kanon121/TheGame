@@ -1,14 +1,13 @@
 import Globals as gb
 import os
-from Map import new_blocks as blocks
 class Entity(object):
     def __init__(self, x, y, image):
         self.setup(image)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.save_x = 100
-        self.save_y = 100
+        self.save_x = self.rect.x
+        self.save_y = self.rect.y
         self.movingR = False
         self.movingL = False
         self.movingU = False
@@ -33,12 +32,15 @@ class Entity(object):
         
     def move(self, cam):
   
-        for block in blocks:
+        for block in gb.maps.new_blocks:
             if self.rect.colliderect(block):
                 if block.is_wall == True:
                     self.rect.x = self.save_x
                     self.rect.y = self.save_y
-                
+                #block.ID 2 is stairs down
+                if block.ID == 2:
+                   gb.maps.level.loadNextMap()
+                             
         if self.movingR == True:
             if self.flipped == False:
                 self.flipped = True
