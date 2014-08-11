@@ -99,7 +99,6 @@ loadMap()
 
 
 
-
 def render(fov, cam):
     for block in new_blocks:
      
@@ -119,9 +118,7 @@ def render(fov, cam):
 
 
         if block.onScreen == True:                 
-            s = gb.pygame.Surface((50,50))
-            s.set_alpha(128)
-            s.fill((255,255,255))
+           
             gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
                 block.rect.y - cam.rect.y))
 """ 

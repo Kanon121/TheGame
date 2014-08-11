@@ -91,7 +91,56 @@ class Entity(object):
 
 
 class Enemy(Entity):
+
+    
+
     def update(self):
-        pass
+        self.speed = 1
+        self.blockedR = False
+        self.blockedL = False
+        self.blockedU = False
+        self.blockedD = False
         
+        self.blockedU2 = False
+
+        for block in gb.maps.new_blocks:
+            if self.rect.colliderect(block):
+                if block.is_wall == True:
+                    self.rect.x = self.save_x
+                    self.rect.y = self.save_y
+                    if self.rect.right == block.rect.left:
+                        self.blockedR = True
+                    if self.rect.left == block.rect.right:
+                        self.blockedL = True
+                    if self.rect.top == block.rect.bottom:
+                        self.blockedU = True
+                    if self.rect.bottom == block.rect.top:
+                        self.blockedD = True
+                    
+
+        if gb.player.rect.x < self.rect.x:
+            self.save_x = self.rect.x
+            self.rect.x -= self.speed
+        
+        if gb.player.rect.x > self.rect.x:
+            self.save_x = self.rect.x
+            if self.blockedR == True:
+                pass
+                
+            
+            self.rect.x += self.speed
+        
+        if gb.player.rect.y < self.rect.y:
+            self.save_y = self.rect.y
+            self.rect.y -= self.speed
+        if gb.player.rect.y > self.rect.y:
+            self.save_y = self.rect.y
+            self.rect.y += self.speed
+
+
+
+
+    def render(self, cam):
+        gb.window.screen.blit(self.image, (self.rect.x - cam.rect.x, 
+            self.rect.y - cam.rect.y))
         
