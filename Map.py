@@ -26,29 +26,43 @@ class Level(object):
         RenderMap()
         self.onLevel = ["level", self.mapCount]
          
+def applyTile(block, tile_x, tile_y):
+    block.tile_x = tile_x
+    block.tile_y = tile_y
+    block.location = (block.tile_x, block.tile_y)
 
 def RenderMap():
     global new_blocks
     new_blocks = []
     x = 0
     y = 0
-
+    tile_x = 0
+    tile_y = 0
     walls = []
     for row in level.current_map:
         for block in row:
-            if block == '.':
+          
+           if block == '.':
                 block = Blocks()
                 block.pic = 'sand.png'
-            elif block == '#':
+                applyTile(block, tile_x, tile_y)
+                
+                
+           
+           elif block == '#':
                 block = Blocks()
                 block.ID = 1
                 block.is_wall = True
                 newImage(block, 'img', 'wall.png')
-            elif block == 'S':
+                applyTile(block, tile_x, tile_y)
+                                      
+           elif block == 'S':
                 block = Blocks()
                 block.ID = 2
                 newImage(block, 'img', 'stairsDown.png')
-            elif block == "s":
+                applyTile(block, tile_x, tile_y)
+                                           
+           if block == "s":
                 block = Blocks()
                 block.ID = 3
                 newImage(block, 'img', 'stairsBroken.png')
@@ -58,29 +72,43 @@ def RenderMap():
                 gb.player.rect.y = block.rect.y
                 gb.player.save_x = block.rect.x
                 gb.player.save_y = block.rect.y
-            if block != "-":
+                applyTile(block, tile_x, tile_y)
+                                         
+           
+           if block != "-":
                 block.rect.x = x
                 block.rect.y = y
                 x += 50
                 new_blocks.append(block)
-            if block == "-":
-                x += 50
-            if x == len(level.current_map[0])*50:
+                tile_x += 1 
+                
+           
+           if block == "-":
+                x += 50 
+                block = Blocks()
+                block.pic = ''
+                applyTile(block, tile_x, tile_y)
+                tile_x += 1
+                       
+           
+           if x == len(level.current_map[0])*50:
                 y += 50
                 x = 0
-            
+                tile_y += 1
+                tile_x = 0
 class Blocks(object):
     def __init__(self):
+        self.tile_x = 0
+        self.tile_y = 0
         self.ID = 0
         self.is_wall = False
         self.pic = 'sand.png'
         self.img_file = os.path.join('img', self.pic)
         self.image = gb.pygame.image.load(self.img_file).convert()
         self.rect = self.image.get_rect()
-        self.remembered = False
-        self.trans = False
         self.onScreen = True
-        self.lighting = 0
+        self.parent = (0,0)
+        self.location = self.tile_x, self.tile_y
     
     
 def newImage(block, location, picture):

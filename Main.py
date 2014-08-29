@@ -2,9 +2,9 @@ import Globals as gb
 from FOV import FOV
 
 baddie = gb.Enemy(300, 300, 'mummy.png')
-baddie2 = gb.Enemy(500, 500, 'mummy.png')
+#baddie2 = gb.Enemy(500, 500, 'mummy.png')
 gb.entities.append(baddie)
-gb.entities.append(baddie2)
+#gb.entities.append(baddie2)
 
 
 playing = True
