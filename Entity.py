@@ -15,7 +15,7 @@ class Entity(object):
         self.moving = False
         self.flipped = False
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
-
+        self.onBlock = 0
 
     def setup(self, image):
         img_file = os.path.join('img', image)
@@ -78,6 +78,9 @@ class Entity(object):
             if e.key == gb.pygame.K_DOWN:
                 self.movingD = True
        
+        
+        
+        
         if e.type == gb.pygame.KEYUP:
             if e.key == gb.pygame.K_RIGHT:
                 self.movingR = False
@@ -92,54 +95,30 @@ class Entity(object):
 
 class Enemy(Entity):
 
-    
 
-    def update(self):
-        self.speed = 1
-        self.blockedR = False
-        self.blockedL = False
-        self.blockedU = False
-        self.blockedD = False
+    def update(self, find):
+        while find.found_end == False:
+            find.getNeighbors()
+            find.beginSearch()
+        distance = len(find.path)
+        find.path = find.path[::-1]
+        #for block in find.path[::-1]:
+        #    print block.location
+        pathX = find.path[self.onBlock].rect.x
+        #print pathX
+        pathY = find.path[self.onBlock].rect.y
+        #print pathY
+        if pathX > self.rect.x:
+            self.rect.x += 1
+        if pathX < self.rect.x:
+            self.rect.x -= 1
+        if pathY > self.rect.y:
+            self.rect.y += 1
+        if pathY < self.rect.y:
+            self.rect.y -= 1
         
-        self.blockedU2 = False
-
-        for block in gb.maps.new_blocks:
-            if self.rect.colliderect(block):
-                if block.is_wall == True:
-                    self.rect.x = self.save_x
-                    self.rect.y = self.save_y
-                    if self.rect.right == block.rect.left:
-                        self.blockedR = True
-                    if self.rect.left == block.rect.right:
-                        self.blockedL = True
-                    if self.rect.top == block.rect.bottom:
-                        self.blockedU = True
-                    if self.rect.bottom == block.rect.top:
-                        self.blockedD = True
-                    
-
-        if gb.player.rect.x < self.rect.x:
-            self.save_x = self.rect.x
-            self.rect.x -= self.speed
-        
-        if gb.player.rect.x > self.rect.x:
-            self.save_x = self.rect.x
-            if self.blockedR == True:
-                pass
-                
-            
-            self.rect.x += self.speed
-        
-        if gb.player.rect.y < self.rect.y:
-            self.save_y = self.rect.y
-            self.rect.y -= self.speed
-        if gb.player.rect.y > self.rect.y:
-            self.save_y = self.rect.y
-            self.rect.y += self.speed
-
-
-
-
+        if self.rect.x == pathX and self.rect.y == pathY:
+            self.onBlock += 1
     def render(self, cam):
 
         gb.window.screen.blit(self.image, (self.rect.x - cam.rect.x, 
