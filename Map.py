@@ -109,7 +109,10 @@ class Blocks(object):
         self.onScreen = True
         self.parent = (0,0)
         self.location = self.tile_x, self.tile_y
-    
+        self.parent = None 
+        self.gx = 0
+        self.hx = 0
+        self.fx = self.gx + self.hx
     
 def newImage(block, location, picture):
     block.pic = picture

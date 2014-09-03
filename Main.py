@@ -1,15 +1,21 @@
 import Globals as gb
 from FOV import FOV
 
-baddie = gb.Enemy(300, 300, 'mummy.png')
+#baddie = gb.Enemy(300, 300, 'mummy.png')
 #baddie2 = gb.Enemy(500, 500, 'mummy.png')
-gb.entities.append(baddie)
+#gb.entities.append(baddie)
 #gb.entities.append(baddie2)
 
 
 playing = True
 
 fov = FOV()
+
+
+for block in gb.find.open_list:
+    baddie = gb.Enemy(block.rect.x, block.rect.y, 'mummy.png')
+    gb.entities.append(baddie)
+
 
 while playing:
     time_passed = gb.clock.tick(60) 
@@ -25,11 +31,12 @@ while playing:
    
     gb.maps.render(fov, gb.cam)    
     gb.player.move(gb.cam)
-    center = (gb.player.rect.x - gb.cam.rect.x, gb.player.rect.y - gb.cam.rect.y)
+    center = (gb.player.rect.x - gb.cam.rect.x, 
+        gb.player.rect.y - gb.cam.rect.y)
     fov.update(center) 
     gb.cam.update() 
     for ents in gb.entities:
-        ents.update()
+        #ents.update()
         ents.render(gb.cam)
      
       

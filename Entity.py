@@ -141,6 +141,7 @@ class Enemy(Entity):
 
 
     def render(self, cam):
+
         gb.window.screen.blit(self.image, (self.rect.x - cam.rect.x, 
             self.rect.y - cam.rect.y))
         

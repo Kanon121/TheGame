@@ -19,6 +19,9 @@ import Map as maps
 from Finding import Finding
 
 
+find = Finding(maps.new_blocks[105], maps.new_blocks[109], maps.new_blocks)
+
+
 
 clock = pygame.time.Clock()
 entities = []
