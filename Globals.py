@@ -18,8 +18,7 @@ cam = Camera(0, 0, screen_width, screen_height)
 import Map as maps
 from Finding import Finding
 
-
-find = Finding(maps.new_blocks[105], maps.new_blocks[332], maps.new_blocks)
+find = Finding(maps.new_blocks[105], maps.new_blocks[302], maps.new_blocks)
 clock = pygame.time.Clock()
 entities = []
 

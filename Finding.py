@@ -5,7 +5,7 @@ ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))
 class Finding():
     def __init__(self, start_block, end_block, blocks):
         self.start = start_block
-        self.current = start_block
+        self.current = self.start
         self.end = end_block
         self.open_list = [self.current]
         self.closed_list = []
@@ -26,79 +26,65 @@ class Finding():
                 self.walls.append(block)
             else:
                 self.tiles.append(block)
+    
     def getNeighbors(self):
         self.neighbors = []
+
         for (i, j) in ADJACENTS:
             check = (self.current.tile_x+i, self.current.tile_y+j)
+            
             for block in self.blocks:
                 if check == block.location:
                     check = block
-            
-            if check not in self.closed_list:   
-                if check not in self.walls:
-                    self.neighbors.append(check)
 
+            if check not in self.walls and check not in self.closed_list:
+                if check not in self.open_list:
+                    self.open_list.append(check)
+                    check.parent = self.current
+                    self.getCost(check)
             
+                
 
+
+            if self.current in self.open_list:
+                self.open_list.remove(self.current)
             
-            for block in self.neighbors:
-                block.parent = self.current
-                #self.AssignNeighbors(check)
+            self.closed_list.append(self.current)
+
+
+    def getCost(self, block):
+        x = abs(block.tile_x - self.end.tile_x)
+        y = abs(block.tile_y - self.end.tile_y)
+        x,y = x * 10, y * 10
         
-            self.closed_list.append(self.current) 
+        block.hx = x + y
 
-    """
-    def AssignNeighbors(self, check):   
-       
+        Sx = block.tile_x
+        Sy = block.tile_y
+        if self.current.tile_x != Sx and self.current.tile_y != Sy:
+            block.gx = block.parent.gx + 14
+        if self.current.tile_x != Sx and self.current.tile_y == Sy:
+            block.gx = block.parent.gx + 10
+        if self.current.tile_x != Sy and self.current.tile_x == Sx:
+            block.gx = block.parent.gx + 10
 
-        for block in self.tiles:
-            if check == (block.tile_x, block.tile_y):
-                self.neighbors.append(block)
-                block.parent = self.current
-                self.neighbors.remove(check)
-        for block in self.walls:
-            if check == (block.tile_x, block.tile_y):
-                self.neighbors.remove(check)
-                self.closed_list.append(block)
-    """
+        block.fx = block.hx + block.gx
+
+    
 
     def beginSearch(self):
-        lowestFx = self.current
-        lowestFxNum = 1000
-        for block in self.neighbors:
-            if block not in self.open_list:
-                self.open_list.append(block)
-            
-            x = abs(self.end.tile_x - block.tile_x)
-            y = abs(self.end.tile_y - block.tile_y)
-            x = x * 10
-            y = y * 10
-            block.hx = x + y
-
-            Sx = block.tile_x
-            Sy = block.tile_y
-            
-            if self.current.tile_x != Sx and self.current.tile_y != Sy:
-                block.gx = block.parent.gx + 14
-            if self.current.tile_x != Sx and self.current.tile_y == Sy:
-                block.gx = block.parent.gx + 10
-            if self.current.tile_y != Sy and self.current.tile_x == Sx:
-                block.gx = block.parent.gx + 10
-            block.fx = block.gx + block.hx
-        
+        lowestFx = None
+        fx = 10000
         for block in self.open_list:
-            if block.fx < lowestFxNum:
-                lowestFxNum = block.fx
+            self.getCost(block)
+            if block.fx < fx:
                 lowestFx = block
+                fx = lowestFx.fx
         self.open_list.remove(lowestFx)
+        self.closed_list.append(lowestFx)
         self.current = lowestFx
-        #print "neighbors " + str(len(self.neighbors))
-        #print "open " + str(len(self.open_list))
-        #print "closed " + str(len(self.closed_list))
+        
         if self.end in self.closed_list:
-            self.found_end = True
-            
-            
             previous = self.end
             while self.start not in self.path:
                 parent = previous.parent

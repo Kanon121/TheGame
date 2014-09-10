@@ -24,16 +24,26 @@ while playing:
 
         if e.type == gb.pygame.KEYDOWN:
             if e.key == gb.pygame.K_d:
-                for block in gb.find.path:
-                    baddie = gb.Enemy(block.rect.x, block.rect.y, 'mummy.png')
-                    gb.entities.append(baddie)
-               
-            if e.key == gb.pygame.K_u:
-                gb.find.getNeighbors()
-                gb.find.beginSearch()
-
+                while gb.find.current != gb.find.end:
+                    gb.find.getNeighbors()
+                    gb.find.beginSearch()
+                for block in gb.find.open_list:
+                    #baddie = gb.Enemy(block.rect.x, block.rect.y, 'mummy.png')
+                    #gb.entities.append(baddie)
+                    pass 
+                for block in gb.find.closed_list:
+                    #baddie = gb.Enemy(block.rect.x, block.rect.y, 'guy2.png')
+                    #gb.entities.append(baddie)
+                    pass
             if e.key == gb.pygame.K_c:
                 gb.entities[:] = []
+        
+            if e.key == gb.pygame.K_i:
+                for block in gb.find.path: 
+                    baddie = gb.Enemy(block.rect.x, block.rect.y, 'guy2.png')
+                    gb.entities.append(baddie)
+
+
         gb.player.update(e)
    
     gb.maps.render(fov, gb.cam)    
