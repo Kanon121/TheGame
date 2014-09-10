@@ -41,11 +41,7 @@ class Finding():
                 if check not in self.open_list:
                     self.open_list.append(check)
                     check.parent = self.current
-                    self.getCost(check)
-            
                 
-
-
             if self.current in self.open_list:
                 self.open_list.remove(self.current)
             
@@ -90,3 +86,5 @@ class Finding():
                 parent = previous.parent
                 previous = parent
                 self.path.append(parent)
+
+        

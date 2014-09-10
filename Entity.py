@@ -31,32 +31,46 @@ class Entity(object):
 
         
     def move(self, cam):
-  
+        speed = 3
         for block in gb.maps.new_blocks:
             if self.rect.colliderect(block):
+                
                 if block.is_wall == True:
                     self.rect.x = self.save_x
                     self.rect.y = self.save_y
+                    if self.rect.left == block.rect.right:
+                        self.movingL = False
+                    elif self.rect.right == block.rect.left:
+                        self.movingR = False
+                    elif self.rect.top == block.rect.bottom:
+                        self.movingU = False
+                    elif self.rect.bottom == block.rect.top:
+                        self.movingD = False
+                    
+                
                 #block.ID 2 is stairs down
                 if block.ID == 2:
                    gb.maps.level.loadNextMap()
                              
+       
+       
+       
         if self.movingR == True:
             if self.flipped == False:
                 self.flipped = True
             self.save_x = self.rect.x
-            self.rect.x += 3
+            self.rect.x += speed
         if self.movingU == True:
             self.save_y = self.rect.y
-            self.rect.y -= 3
+            self.rect.y -= speed
         if self.movingD == True:
             self.save_y = self.rect.y
-            self.rect.y += 3
+            self.rect.y += speed
         if self.movingL == True:
             if self.flipped == True:
                 self.flipped = False
             self.save_x = self.rect.x
-            self.rect.x -= 3
+            self.rect.x -= speed
     
 
 
