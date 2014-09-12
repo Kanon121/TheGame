@@ -12,7 +12,6 @@ class Entity(object):
         self.movingL = False
         self.movingU = False
         self.movingD = False
-        self.moving = False
         self.flipped = False
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
         self.onBlock = 0
@@ -30,111 +29,78 @@ class Entity(object):
         self.rect.y - cam.rect.y))
 
         
-    def move(self, cam):
-        speed = 3
+    def see(self, blocks):
+ 
+        end = (gb.find.end.rect.center[0] - gb.cam.rect.x, 
+            gb.find.end.rect.center[1] -gb.cam.rect.y)
+        
+        
+        start = (gb.player.rect.center[0] - gb.cam.rect.x, 
+            gb.player.rect.center[1] - gb.cam.rect.y)
+
+        line = gb.pygame.draw.line(gb.window.screen, (255, 255, 255), 
+            start, end)
+       
+       
+    def move(self, dx, dy):
+
+        self.rect.x += dx
+        self.rect.y += dy
+        
         for block in gb.maps.new_blocks:
             if self.rect.colliderect(block):
-                
-                if block.is_wall == True:
-                    self.rect.x = self.save_x
-                    self.rect.y = self.save_y
-                    if self.rect.left == block.rect.right:
-                        self.movingL = False
-                    elif self.rect.right == block.rect.left:
-                        self.movingR = False
-                    elif self.rect.top == block.rect.bottom:
-                        self.movingU = False
-                    elif self.rect.bottom == block.rect.top:
-                        self.movingD = False
+                if block.is_wall:
+                    if dx > 0:
+                        self.rect.right = block.rect.left
+                    if dx < 0:
+                        self.rect.left = block.rect.right
+                    if dy > 0:
+                        self.rect.bottom = block.rect.top
+                    if dy < 0:
+                        self.rect.top = block.rect.bottom
                     
                 
                 #block.ID 2 is stairs down
                 if block.ID == 2:
                    gb.maps.level.loadNextMap()
-                             
-       
-       
-       
-        if self.movingR == True:
-            if self.flipped == False:
-                self.flipped = True
-            self.save_x = self.rect.x
-            self.rect.x += speed
-        if self.movingU == True:
-            self.save_y = self.rect.y
-            self.rect.y -= speed
-        if self.movingD == True:
-            self.save_y = self.rect.y
-            self.rect.y += speed
-        if self.movingL == True:
-            if self.flipped == True:
-                self.flipped = False
-            self.save_x = self.rect.x
-            self.rect.x -= speed
-    
 
 
-    
+
     
     def update(self, e):
-
-
-
-
-
-        if e.type == gb.pygame.KEYDOWN:
-            if e.key == gb.pygame.K_RIGHT:
-                self.movingR = True
-            if e.key == gb.pygame.K_UP:
-                self.movingU = True
-            if e.key == gb.pygame.K_LEFT:
-                self.movingL = True
-            if e.key == gb.pygame.K_DOWN:
-                self.movingD = True
-       
-        
-        
-        
-        if e.type == gb.pygame.KEYUP:
-            if e.key == gb.pygame.K_RIGHT:
-                self.movingR = False
-            if e.key == gb.pygame.K_UP:
-                self.movingU = False
-            if e.key == gb.pygame.K_DOWN:
-                self.movingD = False
-            if e.key == gb.pygame.K_LEFT:
-                self.movingL = False
-
-
+            if e == "right":
+                self.move(2, 0)
+            if e == "up":
+                self.move(0, -2)
+            if e == "left":
+                self.move(-2, 0)
+            if e == "down":
+                self.move(0, 2)
 
 class Enemy(Entity):
 
 
-    def update(self, find):
-        while find.found_end == False:
-            find.getNeighbors()
-            find.beginSearch()
-        distance = len(find.path)
-        find.path = find.path[::-1]
-        #for block in find.path[::-1]:
-        #    print block.location
-        pathX = find.path[self.onBlock].rect.x
-        #print pathX
-        pathY = find.path[self.onBlock].rect.y
-        #print pathY
-        if pathX > self.rect.x:
-            self.rect.x += 1
-        if pathX < self.rect.x:
-            self.rect.x -= 1
-        if pathY > self.rect.y:
-            self.rect.y += 1
-        if pathY < self.rect.y:
-            self.rect.y -= 1
-        
-        if self.rect.x == pathX and self.rect.y == pathY:
-            self.onBlock += 1
+    def update(self):
+        self.rect.x += 1
+    
+    
+    
     def render(self, cam):
 
         gb.window.screen.blit(self.image, (self.rect.x - cam.rect.x, 
             self.rect.y - cam.rect.y))
+
+
+    def see(self):
+        end = (gb.player.rect.center[0] - gb.cam.rect.x, 
+            gb.player.rect.center[1] -gb.cam.rect.y)
+            
+            
+        start = (self.rect.center[0] - gb.cam.rect.x, 
+            self.rect.center[1] - gb.cam.rect.y)
+
+        line = gb.pygame.draw.line(gb.window.screen, (255, 0, 0), 
+            start, end)
+
+
         

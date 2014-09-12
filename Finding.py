@@ -37,6 +37,25 @@ class Finding():
                 if check == block.location:
                     check = block
 
+            if check in self.open_list:
+                oldgx = check.gx
+                
+                #check.gx = self.current.parent.gx + 10
+                Sx = self.current.tile_x
+                Sy = self.current.tile_y
+
+                if check.tile_x != Sx and check.tile_y != Sy:
+                    check.gx = self.current.parent.gx + 14
+                if check.tile_x != Sx and check.tile_y == Sy:
+                    check.gx = self.current.parent.gx + 10
+                if check.tile_x != Sy and check.tile_x == Sx:
+                    check.gx = self.current.parent.gx + 10
+        
+                if check.gx < oldgx:
+                    check.parent = self.current
+
+            
+            
             if check not in self.walls and check not in self.closed_list:
                 if check not in self.open_list:
                     self.open_list.append(check)
@@ -66,7 +85,6 @@ class Finding():
 
         block.fx = block.hx + block.gx
 
-    
 
     def beginSearch(self):
         lowestFx = None

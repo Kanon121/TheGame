@@ -9,12 +9,12 @@ pygame.display.init()
 
 from Entity import Entity
 from Entity import Enemy
-player = Entity(50, 50, 'guy2.png')
+player = Entity(52, 52, 'guy2.png')
 
 from Camera import Camera
 
-
 cam = Camera(0, 0, screen_width, screen_height)
+
 import Map as maps
 from Finding import Finding
 
