@@ -1,5 +1,6 @@
 import pygame 
 from Window import Window
+import sys
 window = Window()
 screen_width = 800
 screen_height = 800

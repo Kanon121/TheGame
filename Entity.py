@@ -8,11 +8,8 @@ class Entity(object):
         self.rect.y = y
         self.save_x = self.rect.x
         self.save_y = self.rect.y
-        self.movingR = False
-        self.movingL = False
-        self.movingU = False
-        self.movingD = False
         self.flipped = False
+        self.speed = 3
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
         self.onBlock = 0
 
@@ -68,14 +65,16 @@ class Entity(object):
 
     
     def update(self, e):
-            if e == "right":
-                self.move(2, 0)
-            if e == "up":
-                self.move(0, -2)
-            if e == "left":
-                self.move(-2, 0)
-            if e == "down":
-                self.move(0, 2)
+        spx = self.speed
+        spy = self.speed
+        if e == "right":
+            self.move(spx, 0)
+        if e == "up":
+            self.move(0, -spy)
+        if e == "left":
+            self.move(-spx, 0)
+        if e == "down":
+            self.move(0, spy)
 
 class Enemy(Entity):
 
