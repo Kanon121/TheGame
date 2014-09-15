@@ -9,8 +9,6 @@ class Level(object):
         self.onLevel = ["level", 0]
         self.mapCount = 0
         self.levels = ["a", "b", "c", "d" , "e", "f", "g"]
-    def optionxform(self):
-        pass
     def load_file(self, level, filename="level.map"):
         self.current_map = []
         self.key = {}
@@ -113,12 +111,23 @@ class Blocks(object):
         self.gx = 0
         self.hx = 0
         self.fx = self.gx + self.hx
-    
+
+
+def inherent(block, selected, x, y):
+    block.ID = selected.ID
+    block.image = selected.image
+    block.rect = block.image.get_rect()
+    block.is_wall = selected.is_wall
+    block.rect.x = x
+    block.rect.y = y
+    print "block rect is"+ str(block.rect) 
+    return block
+
+
 def newImage(block, location, picture):
     block.pic = picture
     block.img_file = os.path.join(location, block.pic)
     block.image = gb.pygame.image.load(block.img_file)
-
 
 def loadMap():
     global level
@@ -127,6 +136,32 @@ def loadMap():
     RenderMap()
         
 loadMap()
+
+def save():
+    with open('save.save', 'w') as f:
+        for blocks in new_blocks:
+            blocks.image = None
+        gb.pickle.dump(new_blocks, f)
+        exit()
+
+def load():
+    with open('save.save', 'r') as f:
+        new_blocks = gb.pickle.load(f)
+        for block in new_blocks:
+            if block.ID == 0:
+                pic = 'sand.png'
+            elif block.ID == 1:
+                pic = 'wall.png'
+            elif block.ID == 2:
+                pic = 'stairsDown.png'
+            elif block.ID == 3:
+                pic = 'stairsBroken.png'
+            img_file = os.path.join('img', pic)
+            block.image = gb.pygame.image.load(img_file).convert()
+        return new_blocks
+
+
+new_blocks = load()
 
 
 

@@ -19,23 +19,60 @@ gb.entities.append(baddie2)
 
 
 mode = 'delete'
+draggingL = False
+draggingR = False
+selected = False
 
-dragging = False
+
+def makeBlock():
+    posx, posy = gb.pygame.mouse.get_pos()
+    posx += gb.cam.rect.x
+    posy += gb.cam.rect.y
+    roundX = int(50 * round(posx / 50))
+    roundY = int(50 * round(posy / 50))
+    if selected:
+        newblock = gb.maps.Blocks()
+        newblock =  gb.maps.inherent(newblock, selected, roundX, roundY)
+    for block in gb.maps.new_blocks:
+        if block.rect.collidepoint(posx, posy): 
+            gb.maps.new_blocks.remove(block)
+            gb.maps.new_blocks.append(newblock)
+            madeblock = True
+        else:
+            if not madeblock:
+                madeblock = True
+                gb.maps.new_blocks.append(newblock)
+            
+
+    
+            
+                
+
+
+
+
 
 while editing:
     ev = gb.pygame.event.get()
     for e in ev:
         if e.type == gb.pygame.QUIT:
             editing = False
+            gb.maps.save()
+            
         if e.type == gb.pygame.MOUSEBUTTONDOWN:
             if e.button == 1:
-                dragging = True
+                draggingL = True
                 for block in gb.maps.new_blocks:
                     if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
                         e.pos[1] + gb.cam.rect.y):
                         if mode == 'delete':
                             gb.maps.new_blocks.remove(block)
-            if e.button == 3:
+            if e.button == 3:                
+                makeBlock()
+                draggingR = True
+            
+            
+            if e.button == 2:
                 for block in gb.maps.new_blocks:
                     if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
                         e.pos[1] + gb.cam.rect.y):
@@ -43,20 +80,21 @@ while editing:
 
         if e.type == gb.pygame.MOUSEBUTTONUP:
             if e.button == 1:
-                dragging = False
+                draggingL = False
+            if e.button == 3:
+                draggingR = False
 
 
-        if dragging:
-            posx = gb.pygame.mouse.get_pos()
-            posy = gb.pygame.mouse.get_pos()
-            posx = posx[0]
-            posy = posy[1]
+        if draggingL:
+            posx, posy = gb.pygame.mouse.get_pos()
+            
             for block in gb.maps.new_blocks:
                 if block.rect.collidepoint(posx + gb.cam.rect.x,
                     posy + gb.cam.rect.y):
                     gb.maps.new_blocks.remove(block)
 
-
+        if draggingR:
+            makeBlock()            
 
 
 
@@ -106,7 +144,7 @@ while playing:
         gb.player.update("up")
 
 
-    b.maps.render(gb.cam)    
+    gb.maps.render(gb.cam)    
 
     gb.cam.update(False) 
     for ents in gb.entities:
