@@ -22,9 +22,10 @@ mode = 'delete'
 draggingL = False
 draggingR = False
 selected = False
-
+madeblock = False
 
 def makeBlock():
+    global madeblock
     posx, posy = gb.pygame.mouse.get_pos()
     posx += gb.cam.rect.x
     posy += gb.cam.rect.y
@@ -38,19 +39,16 @@ def makeBlock():
             gb.maps.new_blocks.remove(block)
             gb.maps.new_blocks.append(newblock)
             madeblock = True
-        else:
-            if not madeblock:
-                madeblock = True
-                gb.maps.new_blocks.append(newblock)
-            
+        if madeblock == True:
+            madeblock = False
+            break
+        
 
+    if madeblock == False:
+        madeblock = True
+        gb.maps.new_blocks.append(newblock)
+            
     
-            
-                
-
-
-
-
 
 while editing:
     ev = gb.pygame.event.get()

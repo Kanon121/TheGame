@@ -120,7 +120,6 @@ def inherent(block, selected, x, y):
     block.is_wall = selected.is_wall
     block.rect.x = x
     block.rect.y = y
-    print "block rect is"+ str(block.rect) 
     return block
 
 
