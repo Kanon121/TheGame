@@ -11,17 +11,20 @@ for argv in gb.sys.argv:
         editing = False
 
 
-
+"""
 baddie = gb.Enemy(300, 300, 'mummy.png')
 baddie2 = gb.Enemy(500, 500, 'mummy.png')
 gb.entities.append(baddie)
 gb.entities.append(baddie2)
-
+"""
 
 mode = 'delete'
 draggingL = False
 draggingR = False
-selected = False
+
+selected = gb.maps.new_blocks[0]
+
+mouseHover = True
 
 
 def makeBlock():
@@ -31,9 +34,7 @@ def makeBlock():
     posy += gb.cam.rect.y
     roundX = int(50 * round(posx / 50))
     roundY = int(50 * round(posy / 50))
-    if selected:
-        newblock = gb.maps.Blocks()
-        newblock =  gb.maps.inherent(newblock, selected, roundX, roundY)
+    newblock = gb.maps.inherent(selected, roundX, roundY)
     
     for block in gb.maps.new_blocks:
         if block.rect.collidepoint(posx, posy): 
@@ -54,14 +55,14 @@ while editing:
             gb.maps.save()
             
         if e.type == gb.pygame.MOUSEBUTTONDOWN:
-            if e.button == 1:
+            if e.button == 3:
                 draggingL = True
                 for block in gb.maps.new_blocks:
                     if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
                         e.pos[1] + gb.cam.rect.y):
                         if mode == 'delete':
                             gb.maps.new_blocks.remove(block)
-            if e.button == 3:                
+            if e.button == 1:                
                 makeBlock()
                 draggingR = True
             
@@ -73,9 +74,9 @@ while editing:
                         selected = block
 
         if e.type == gb.pygame.MOUSEBUTTONUP:
-            if e.button == 1:
-                draggingL = False
             if e.button == 3:
+                draggingL = False
+            if e.button == 1:
                 draggingR = False
 
 
@@ -97,21 +98,25 @@ while editing:
     gb.window.RenderWindow('black')
     gb.cam.update(True)
 
+
+    if mouseHover:
+        posx, posy = gb.pygame.mouse.get_pos()
+        gb.window.screen.blit(selected.image, (posx - 25 , posy - 25))
+
+
+
     key = gb.pygame.key.get_pressed()
 
-    if key[gb.pygame.K_d]:
-        mode = 'delete'
-    if key[gb.pygame.K_c]:
-        mode = 'copy'
-    if key[gb.pygame.K_p]:
-        mode = 'paste'
-    if key[gb.pygame.K_LEFT]:
+
+    if key[gb.pygame.K_t]:
+        mouseHover = True
+    if key[gb.pygame.K_a]:
         gb.cam.rect.x -= 3
-    if key[gb.pygame.K_RIGHT]:
+    if key[gb.pygame.K_d]:
         gb.cam.rect.x += 3
-    if key[gb.pygame.K_DOWN]:
+    if key[gb.pygame.K_s]:
         gb.cam.rect.y += 3
-    if key[gb.pygame.K_UP]:
+    if key[gb.pygame.K_w]:
         gb.cam.rect.y -= 3
 
 

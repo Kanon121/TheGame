@@ -11,7 +11,7 @@ class Entity(object):
         self.flipped = False
         self.speed = 3
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
-        self.onBlock = 0
+
 
     def setup(self, image):
         img_file = os.path.join('img', image)
