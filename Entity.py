@@ -57,8 +57,8 @@ class Entity(object):
                         self.rect.top = block.rect.bottom
                     
                 
-                #block.ID 2 is stairs down
-                if block.ID == 2:
+                #block.ID 3 is stairs down
+                if block.ID == 3:
                    gb.maps.level.loadNextMap()
 
 

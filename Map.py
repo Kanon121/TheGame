@@ -48,10 +48,7 @@ def RenderMap():
                                            
            if block == "s":
                 block = Blocks(3, x, y, 'stairsDown.png', 
-                    False)
-                gb.player.save_x = block.rect.x
-                gb.player.save_y = block.rect.y
-                                         
+                    False)                                         
            
            if block != "-":
                 block.rect.x = x
@@ -75,8 +72,6 @@ def RenderMap():
 
 class Blocks(object):
     def __init__(self, ID, x, y, pic, wall):
-        self.tile_x = 0
-        self.tile_y = 0
         self.ID = ID
         self.is_wall = wall
         self.image = self.GetImage(pic)
@@ -85,12 +80,12 @@ class Blocks(object):
         self.rect.y = y
         self.onScreen = True
         self.parent = (0,0)
-        self.location = self.tile_x, self.tile_y
-        self.parent = None
         self.gx = 0
         self.hx = 0
         self.fx = self.gx + self.hx
         self.location = (self.rect.x / 50 ,self.rect.y / 50)
+        self.tile_x = self.location[0]
+        self.tile_y = self.location[1]
         
     
     
@@ -127,8 +122,7 @@ def cycleBlock(selected):
 
 
 def inherent(selected, x, y):
-    block = Blocks(selected.ID, x, y, 
-        selected.tile_x,selected.tile_y, selected.pic, selected.is_wall)
+    block = Blocks(selected.ID, x, y,selected.pic, selected.is_wall)
     return block
 
 
@@ -164,7 +158,7 @@ def load():
         new_blocks = gb.pickle.load(f)
         i = 0
         for block in new_blocks:
-            print block[0], block[1], block[2], block[3], block[4]
+            
             block = Blocks(block[0], block[1], block[2], block[3], block[4])
             new_blocks[i] = block
 

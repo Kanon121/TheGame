@@ -12,39 +12,57 @@ pygame.display.init()
 
 from Entity import Entity
 from Entity import Enemy
-player = Entity(50, 50, 'guy2.png')
-
 from Camera import Camera
-
-cam = Camera(0, 0, screen_width, screen_height)
-
 import Map as maps
+
+player = Entity(0, 0, 'guy2.png')
+ 
+cam = Camera(0, 0, screen_width, screen_height)
 
 
 maps.loadMap()
 maps.level.loadNextMap()
 maps.new_blocks = maps.load()
-    
-
-
-from Finding import Finding
-
+ 
+maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
 
 start = None
 block = None
 
 for block in maps.new_blocks:    
-    if block.ID == 3:
-        start = block
     if block.ID == 2:
+        start = block
+    if block.ID == 3:
         end = block
     
 
 
 
 
+
+cam.rect.x = start.rect.x - 400 
+cam.rect.y = start.rect.y - 400
+player.rect.x = start.rect.x
+player.rect.y = start.rect.y
+
+
+from Finding import Finding
+from Editor import Editor
+
+edit = Editor()
+
+
+
+"""
 find = Finding(start, end, maps.new_blocks)
+
+while not find.found_end:
+    find.getNeighbors()
+    find.beginSearch()
+    
+print find.path
+"""
 
 
 clock = pygame.time.Clock()

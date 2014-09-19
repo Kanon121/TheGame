@@ -14,6 +14,7 @@ class Finding():
         self.walls = []
         self.tiles = []
         self.path = []
+        self.lowestFx = None
         self.found_end = False
         self.parseWalls(self.blocks)
         self.getNeighbors()
@@ -91,16 +92,21 @@ class Finding():
 
 
     def beginSearch(self):
-        lowestFx = None
+        
         fx = 10000
         for block in self.open_list:
             self.getCost(block)
             if block.fx < fx:
-                lowestFx = block
-                fx = lowestFx.fx
-        self.open_list.remove(lowestFx)
-        self.closed_list.append(lowestFx)
-        self.current = lowestFx
+                self.lowestFx = block
+                fx = self.lowestFx.fx
+        
+        
+
+
+        print self.lowestFx.location, self.end.location
+        self.open_list.remove(self.lowestFx)
+        self.closed_list.append(self.lowestFx)
+        self.current = self.lowestFx
         
         if self.end in self.closed_list:
             previous = self.end
