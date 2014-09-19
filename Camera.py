@@ -6,5 +6,4 @@ class Camera(object):
     def update(self, edit):
         if not edit:
             self.rect.center = gb.player.rect.x, gb.player.rect.y    
-        
-        
+

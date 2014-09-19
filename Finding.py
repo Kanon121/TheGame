@@ -31,11 +31,15 @@ class Finding():
         self.neighbors = []
 
         for (i, j) in ADJACENTS:
-            check = (self.current.tile_x+i, self.current.tile_y+j)
+            check = (self.current.location[0]+i, 
+                self.current.location[1]+j)
             
             for block in self.blocks:
                 if check == block.location:
                     check = block
+                    
+
+
 
             if check in self.open_list:
                 oldgx = check.gx

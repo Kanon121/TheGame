@@ -23,8 +23,11 @@ draggingL = False
 draggingR = False
 
 
+gb.maps.all_block_types = gb.maps.getAllBlockTypes(gb.maps.new_blocks)
 
-selected = gb.maps.new_blocks[0]
+
+selected = gb.maps.all_block_types[0]
+
 
 mouseHover = True
 
@@ -49,6 +52,8 @@ def makeBlock():
         
 
 
+
+
 while editing:
     ev = gb.pygame.event.get()
     for e in ev:
@@ -59,7 +64,12 @@ while editing:
 
         if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_t:
             mouseHover = not mouseHover
-        
+       
+        if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_y:
+            selected = gb.maps.cycleBlock(selected)
+            
+                
+                
             
         if e.type == gb.pygame.MOUSEBUTTONDOWN:
             if e.button == 3:
@@ -67,8 +77,8 @@ while editing:
                 for block in gb.maps.new_blocks:
                     if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
                         e.pos[1] + gb.cam.rect.y):
-                        if mode == 'delete':
-                            gb.maps.new_blocks.remove(block)
+                        gb.maps.new_blocks.remove(block)
+            
             if e.button == 1:                
                 makeBlock()
                 draggingR = True
@@ -102,14 +112,18 @@ while editing:
     if mouseHover:
         posx, posy = gb.pygame.mouse.get_pos()
         gb.window.screen.blit(selected.image, (posx - 25 , posy - 25))
-   
+        outLine = gb.pygame.draw.rect(gb.window.screen, (100, 200, 200),
+            (posx - 25, posy - 25, 51, 51), 2)
+
+
+
     gb.pygame.display.flip()    
     gb.window.RenderWindow('black')    
     gb.cam.update(True)
 
     
     
-
+    
 
 
 

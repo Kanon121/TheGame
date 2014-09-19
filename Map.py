@@ -2,8 +2,6 @@ import Globals as gb
 import ConfigParser
 import os
 
-
-
 class Level(object):
     def __init__(self):
         self.onLevel = ["level", 0]
@@ -37,19 +35,19 @@ def RenderMap():
         for block in row:
           
            if block == '.':
-                block = Blocks(0, x, y, tile_x, tile_y, 'sand.png',  False)
+                block = Blocks(0, x, y, 'sand.png',  False)
                 
                 
            
-           elif block == '#':
-                block = Blocks(1, x, y, tile_x, tile_y, 'wall.png', True)
+           if block == '#':
+                block = Blocks(1, x, y, 'wall.png', True)
                                       
-           elif block == 'S':
-                block = Blocks(2, x, y, tile_x, tile_y, 'stairsBroken.png', 
+           if block == 'S':
+                block = Blocks(2, x, y, 'stairsBroken.png', 
                     False)
                                            
            if block == "s":
-                block = Blocks(3, x, y, tile_x, tile_y, 'stairsDown.png', 
+                block = Blocks(3, x, y, 'stairsDown.png', 
                     False)
                 gb.player.save_x = block.rect.x
                 gb.player.save_y = block.rect.y
@@ -76,10 +74,9 @@ def RenderMap():
                 tile_x = 0
 
 class Blocks(object):
-    def __init__(self, ID, x, y, tile_x, tile_y, pic, wall):
-        self.tile_x = tile_x
-        self.tile_y = tile_y
-        self.location = (tile_x, tile_y)
+    def __init__(self, ID, x, y, pic, wall):
+        self.tile_x = 0
+        self.tile_y = 0
         self.ID = ID
         self.is_wall = wall
         self.image = self.GetImage(pic)
@@ -93,13 +90,39 @@ class Blocks(object):
         self.gx = 0
         self.hx = 0
         self.fx = self.gx + self.hx
-
-    def GetImage(self, pic):
-        self.pic = pic
-        img_file = os.path.join('img', pic)
-        self.image = gb.pygame.image.load(img_file).convert()
-        return self.image
+        self.location = (self.rect.x / 50 ,self.rect.y / 50)
         
+    
+    
+    
+    def GetImage(self, pic):
+    
+        self.pic = pic
+        if not type(pic) is int: 
+            img_file = os.path.join('img', self.pic)
+            self.image = gb.pygame.image.load(img_file).convert()
+            return self.image
+                
+
+def cycleBlock(selected):
+    
+
+    for loc, blocks in enumerate(all_block_types):
+        if selected.ID == blocks.ID:
+            whereIs = loc
+            end = len(all_block_types) - 1
+            if whereIs != end:
+                selected = all_block_types[whereIs + 1]
+            
+            
+            if whereIs == end:
+                selected = all_block_types[0]
+                
+            break    
+            #selected = all_block_types[0]
+    
+    
+    return selected
 
 
 
@@ -120,8 +143,8 @@ def unloadBlocks(new_blocks):
     i = 0 
     for blocks in new_blocks:
         
-        stored = [blocks.ID, blocks.rect.x, blocks.rect.y, blocks.tile_x,
-            blocks.tile_y, blocks.pic, blocks.is_wall]
+        stored = [blocks.ID, blocks.rect.x, blocks.rect.y,
+            blocks.pic, blocks.is_wall]
         new_blocks[i] = stored 
         i += 1
     return new_blocks
@@ -141,18 +164,32 @@ def load():
         new_blocks = gb.pickle.load(f)
         i = 0
         for block in new_blocks:
-            block = Blocks(block[0], block[1], block[2], block[3], block[4], 
-                block[5], block[6])
+            print block[0], block[1], block[2], block[3], block[4]
+            block = Blocks(block[0], block[1], block[2], block[3], block[4])
             new_blocks[i] = block
-            i += 1
 
+            i += 1
+            
         return new_blocks 
 
 
 
+def getAllBlockTypes(new_blocks):
+    gotten = []
+    for block in new_blocks:
+        if block.ID not in gotten:
+            all_block_types.append(block)
+            gotten.append(block.ID)
 
 
+            
+            
+    
+    return all_block_types
+ 
+    
 
+all_block_types = []
 
 
 
