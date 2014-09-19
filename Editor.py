@@ -38,6 +38,7 @@ class Editor():
         for e in ev:
             if e.type == gb.pygame.QUIT:
                 self.editing = False
+                issaving = raw_input('Are you saving?')
                 gb.maps.save()
 
 

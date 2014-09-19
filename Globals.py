@@ -41,8 +41,8 @@ for block in maps.new_blocks:
 
 
 
-cam.rect.x = start.rect.x - 400 
-cam.rect.y = start.rect.y - 400
+#cam.rect.x = start.rect.x - 400 
+#cam.rect.y = start.rect.y - 400
 player.rect.x = start.rect.x
 player.rect.y = start.rect.y
 

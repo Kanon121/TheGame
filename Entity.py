@@ -27,18 +27,8 @@ class Entity(object):
 
         
     def see(self, blocks):
- 
-        end = (gb.find.end.rect.center[0] - gb.cam.rect.x, 
-            gb.find.end.rect.center[1] -gb.cam.rect.y)
-        
-        
-        start = (gb.player.rect.center[0] - gb.cam.rect.x, 
-            gb.player.rect.center[1] - gb.cam.rect.y)
-
-        line = gb.pygame.draw.line(gb.window.screen, (255, 255, 255), 
-            start, end)
-       
-       
+        pass 
+    
     def move(self, dx, dy):
 
         self.rect.x += dx
