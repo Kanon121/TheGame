@@ -116,48 +116,46 @@ def loadMap():
     RenderMap()
         
 
-def save():
-    with open('save.save', 'w') as f:
-        for blocks in new_blocks:   
-            stored = (blocks.ID, blocks.rect.x, blocks.rect.y, blocks.tile_x,
-                blocks.tile_y, blocks.pic, blocks.is_wall)
-            blocks = stored 
-       
-            print str(type(blocks))
-            
+def unloadBlocks(new_blocks):
+    i = 0 
+    for blocks in new_blocks:
+        
+        stored = [blocks.ID, blocks.rect.x, blocks.rect.y, blocks.tile_x,
+            blocks.tile_y, blocks.pic, blocks.is_wall]
+        new_blocks[i] = stored 
+        i += 1
+    return new_blocks
+        
 
+
+
+def save():
+    global new_blocks
+    with open('save.save', 'w') as f:
+        new_blocks = unloadBlocks(new_blocks)
         gb.pickle.dump(new_blocks, f)
         exit()
 
 def load():
     with open('save.save', 'r') as f:
         new_blocks = gb.pickle.load(f)
+        i = 0
         for block in new_blocks:
-            print block            
-        
-        
-        
-        
-        """    
-            if block.ID == 0:
-                pic = 'sand.png'
-            elif block.ID == 1:
-                pic = 'wall.png'
-            elif block.ID == 2:
-                pic = 'stairsDown.png'
-            elif block.ID == 3:
-                pic = 'stairsBroken.png'
-            img_file = os.path.join('img', pic)
-            block.image = gb.pygame.image.load(img_file).convert()
-        
-        
-        
-        return new_blocks
-"""
+            block = Blocks(block[0], block[1], block[2], block[3], block[4], 
+                block[5], block[6])
+            new_blocks[i] = block
+            i += 1
 
-loadMap()
-#new_blocks = load()
-    
+        return new_blocks 
+
+
+
+
+
+
+
+
+
 
 
 def render(cam):

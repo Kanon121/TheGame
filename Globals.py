@@ -19,20 +19,29 @@ from Camera import Camera
 cam = Camera(0, 0, screen_width, screen_height)
 
 import Map as maps
+
+
+maps.loadMap()
+maps.new_blocks = maps.load()
+    
+
+
 from Finding import Finding
 
 start = None
 block = None
-for block in maps.new_blocks:
-    if block.ID == 3:
-        start = block
-    if block.ID == 2:
-        end = block
+
+#for block in maps.new_blocks:
+#    pass    
+#    if block.ID == 3:
+#        start = block
+#    if block.ID == 2:
+#        end = block
 
 
 
 
-find = Finding(start, end, maps.new_blocks)
+#find = Finding(start, end, maps.new_blocks)
 
 
 clock = pygame.time.Clock()
