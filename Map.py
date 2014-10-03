@@ -210,35 +210,4 @@ def render(cam):
         if block.onScreen == True:                 
            
             gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
-                block.rect.y - cam.rect.y))
-""" 
-        if block.onScreen:
-            if block.rect.colliderect(fov):
-                block.remembered = True
-                if block.ID == 0:
-                    if block.trans == True:
-                        newImage(block, 'img', 'sand.png')
-                        block.trans = False
-                if block.ID == 1:
-                    if block.trans == True:
-                        newImage(block, 'img', 'wall.png')
-                        block.trans = False
-                gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
-                    block.rect.y - cam.rect.y))
-        
-
-           
-            if not block.rect.colliderect(fov):
-
-                if block.remembered == True:
-                    if block.trans == False:
-                        if block.ID == 0:
-                            newImage(block, 'img', 'sand_trans.png')
-                            block.trans = True
-                        if block.ID == 1:
-                            newImage(block, 'img', 'wall_trans.png')
-                            block.trans = True
-                    gb.window.screen.blit(block.image, (block.rect.x - cam.rect.x,
-            block.rect.y - cam.rect.y))
-"""
-       
+                block.rect.y - cam.rect.y))     

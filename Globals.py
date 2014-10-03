@@ -1,6 +1,21 @@
 import pygame 
 from Window import Window
 import sys
+
+playing = True
+editing = False
+reloadGame = False
+try: 
+    arg = sys.argv[1]
+    if arg == "-edit":
+        editing = True
+        playing = False
+
+    if arg == "-reload":
+        reloadGame = True
+except IndexError:
+    pass
+
 import pickle 
 import copy
 window = Window()
@@ -15,59 +30,34 @@ from Entity import Enemy
 from Camera import Camera
 import Map as maps
 
-player = Entity(0, 0, 'guy2.png')
- 
 cam = Camera(0, 0, screen_width, screen_height)
 
+player = Entity(0, 0, 'guy2.png')
 
 maps.loadMap()
 maps.level.loadNextMap()
-maps.new_blocks = maps.load()
- 
+
+if not reloadGame:
+    maps.new_blocks = maps.load() 
+
+for block in maps.new_blocks:
+    if block.ID == 2:
+        start = block.rect.x, block.rect.y
+
+player.rect.x, player.rect.y = start
+
 maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
-
-start = None
-block = None
-
-for block in maps.new_blocks:    
-    if block.ID == 2:
-        start = block
-    if block.ID == 3:
-        end = block
-    
-
-
-
-
-
-#cam.rect.x = start.rect.x - 400 
-#cam.rect.y = start.rect.y - 400
-player.rect.x = start.rect.x
-player.rect.y = start.rect.y
-
-
-from Finding import Finding
 from Editor import Editor
 
 edit = Editor()
 
+if editing == True:
+    edit.editing = True
 
-
-"""
-find = Finding(start, end, maps.new_blocks)
-
-while not find.found_end:
-    find.getNeighbors()
-    find.beginSearch()
-    
-print find.path
-"""
 
 
 clock = pygame.time.Clock()
+
 entities = []
 
-
-total_screen_height = maps.level.current_map * 50
-total_screen_width = maps.level.current_map[0] * 50
