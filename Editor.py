@@ -31,7 +31,6 @@ class Editor():
         ev = gb.pygame.event.get()
         for e in ev:
             if e.type == gb.pygame.QUIT:
-                self.editing = False
                 self.Saving()
                 
                 
@@ -100,18 +99,19 @@ class Editor():
             gb.cam.rect.y += 3
         if key[gb.pygame.K_w]:
             gb.cam.rect.y -= 3
-
+        if key[gb.pygame.K_ESCAPE]:
+            self.Saving()
+        
     def Saving(self):
         waiting = True
         key = gb.pygame.key.get_pressed()
         gb.pygame.font.init()
         myfont = gb.pygame.font.SysFont("monospace", 30)
         color = (0,0,0)
+        render = True
         while waiting:
             event = gb.pygame.event.poll()
-            if event.type == gb.pygame.QUIT:
-                waiting = False
-            gb.maps.render(gb.cam)
+
             
             saveText = myfont.render("Save", 1, (255, 255, 255))
             quitText = myfont.render("Quit", 1, (255, 255, 255))
@@ -128,19 +128,18 @@ class Editor():
                 
             if event.type == gb.pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    print "clicked"
                     if yesBox.collidepoint(posx, posy):
-                        print "saved"
-                        gb.maps.save()
+                        gb.maps.save(False, gb.mapName)
+                        gb.maps.new_blocks = gb.loadGame(gb.mapName)
                         waiting = False
                     if noBox.collidepoint(posx, posy):
-                        print "quit"
                         waiting = False
+                        exit()
 
 
-            
-            gb.window.screen.blit(saveText, (yesBox.x + 40, yesBox.y + 15))
-            gb.window.screen.blit(quitText, (noBox.x + 40, noBox.y + 15))
+         
+            gb.window.screen.blit(saveText, (yesBox.x + 30, yesBox.y + 10))
+            gb.window.screen.blit(quitText, (noBox.x + 30, noBox.y + 10))
            
             gb.pygame.display.flip()
             gb.window.RenderWindow('black')
