@@ -139,8 +139,8 @@ class Editor():
 
 
             
-            gb.window.screen.blit(saveText, (yesBox.x + 40, yesBox.y + 15))
-            gb.window.screen.blit(quitText, (noBox.x + 40, noBox.y + 15))
+            gb.window.screen.blit(saveText, (yesBox.x + 30, yesBox.y + 10))
+            gb.window.screen.blit(quitText, (noBox.x + 30, noBox.y + 10))
            
             gb.pygame.display.flip()
             gb.window.RenderWindow('black')
