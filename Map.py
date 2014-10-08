@@ -146,18 +146,15 @@ def unloadBlocks(new_blocks):
 
 
 
-def save(shouldExit, map):
+def save():
     global new_blocks
-    with open(map, 'w') as f:
+    with open('save.save', 'w') as f:
         new_blocks = unloadBlocks(new_blocks)
         gb.pickle.dump(new_blocks, f)
-        if shouldExit:
-            exit()
-    
+        exit()
 
-def load(map):
-
-    with open("saves/" + map, 'r') as f:
+def load():
+    with open('save.save', 'r') as f:
         new_blocks = gb.pickle.load(f)
         i = 0
         for block in new_blocks:

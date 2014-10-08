@@ -1,7 +1,7 @@
 import pygame 
 from Window import Window
 import sys
-import os
+
 playing = True
 editing = False
 reloadGame = False
@@ -34,21 +34,18 @@ cam = Camera(0, 0, screen_width, screen_height)
 
 player = Entity(0, 0, 'guy2.png')
 
+maps.loadMap()
+maps.level.loadNextMap()
 
-mapName = "save.save"
-def loadGame(mapName):
-    maps.loadMap()
-    maps.level.loadNextMap()
-    if not reloadGame:
-        maps.new_blocks = maps.load(mapName) 
-loadGame(mapName)        
+if not reloadGame:
+    maps.new_blocks = maps.load() 
 
-        
 for block in maps.new_blocks:
     if block.ID == 2:
         start = block.rect.x, block.rect.y
 
 player.rect.x, player.rect.y = start
+
 maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
 from Editor import Editor
