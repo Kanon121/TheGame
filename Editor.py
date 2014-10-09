@@ -35,10 +35,10 @@ class Editor():
                 self.Saving()
                 
                 
-            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_t:
+            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
                 self.mouseHover = not self.mouseHover
            
-            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_y:
+            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_c:
                 self.selected = gb.maps.cycleBlock(self.selected)                    
                 
                     
@@ -100,7 +100,16 @@ class Editor():
             gb.cam.rect.y += 3
         if key[gb.pygame.K_w]:
             gb.cam.rect.y -= 3
-
+        if key[gb.pygame.K_ESCAPE]:
+            self.Saving()
+        if key[gb.pygame.K_p]:
+            gb.maps.save()
+            gb.mapName = "save2.save"
+            gb.LoadGame()
+        if key[gb.pygame.K_o]:
+            gb.maps.save()
+            gb.mapName = "save.save"
+            gb.LoadGame()       
     def Saving(self):
         waiting = True
         key = gb.pygame.key.get_pressed()
@@ -125,17 +134,18 @@ class Editor():
             noOutline = gb.pygame.draw.rect(gb.window.screen, (255,100,100), (noBox.x, noBox.y, 125, 50), 2)
             
             posx, posy = gb.pygame.mouse.get_pos() 
-                
+            if event.type == gb.pygame.KEYDOWN and event.key == gb.pygame.K_ESCAPE:
+                waiting = False
+                 
             if event.type == gb.pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    print "clicked"
                     if yesBox.collidepoint(posx, posy):
-                        print "saved"
                         gb.maps.save()
+                        gb.LoadGame()
                         waiting = False
                     if noBox.collidepoint(posx, posy):
-                        print "quit"
                         waiting = False
+                        gb.edit.editing = False
 
 
             

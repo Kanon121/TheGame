@@ -22,10 +22,9 @@ class Level(object):
         RenderMap()
         self.onLevel = ["level", self.mapCount]
          
-
+new_blocks = []
 def RenderMap():
-    global new_blocks
-    new_blocks = []
+
     x = 0
     y = 0
     tile_x = 0
@@ -148,13 +147,13 @@ def unloadBlocks(new_blocks):
 
 def save():
     global new_blocks
-    with open('save.save', 'w') as f:
+    with open(os.getcwd() + '/saves/' + gb.mapName, 'w') as f:
         new_blocks = unloadBlocks(new_blocks)
         gb.pickle.dump(new_blocks, f)
-        exit()
+
 
 def load():
-    with open('save.save', 'r') as f:
+    with open(os.getcwd() + '/saves/' + gb.mapName, 'r') as f:
         new_blocks = gb.pickle.load(f)
         i = 0
         for block in new_blocks:

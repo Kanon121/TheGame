@@ -1,7 +1,7 @@
 import pygame 
 from Window import Window
 import sys
-
+import os
 playing = True
 editing = False
 reloadGame = False
@@ -18,6 +18,7 @@ except IndexError:
 
 import pickle 
 import copy
+
 window = Window()
 screen_width = 800
 screen_height = 800
@@ -34,11 +35,15 @@ cam = Camera(0, 0, screen_width, screen_height)
 
 player = Entity(0, 0, 'guy2.png')
 
-maps.loadMap()
-maps.level.loadNextMap()
+mapName = "level1.level"
 
-if not reloadGame:
-    maps.new_blocks = maps.load() 
+def LoadGame():
+    maps.loadMap()
+
+
+    if not reloadGame:
+        maps.new_blocks = maps.load() 
+LoadGame()
 
 for block in maps.new_blocks:
     if block.ID == 2:
@@ -49,9 +54,7 @@ player.rect.x, player.rect.y = start
 maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
 from Editor import Editor
-
 edit = Editor()
-
 if editing == True:
     edit.editing = True
 
