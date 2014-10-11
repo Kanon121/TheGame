@@ -36,21 +36,22 @@ cam = Camera(0, 0, screen_width, screen_height)
 player = Entity(0, 0, 'guy2.png')
 
 mapName = "level1.level"
-
+onLevel = 1
 def LoadGame():
     maps.loadMap()
-
-
     if not reloadGame:
-        maps.new_blocks = maps.load() 
+        loadHolder = maps.load() 
+        maps.new_blocks = loadHolder[0]
+        player.rect = loadHolder[1]
+
 LoadGame()
+def MovePlayer():
+    for block in maps.new_blocks:
+        if block.ID == 2:
+            start = block.rect.x, block.rect.y
 
-for block in maps.new_blocks:
-    if block.ID == 2:
-        start = block.rect.x, block.rect.y
-
-player.rect.x, player.rect.y = start
-
+    player.rect.x, player.rect.y = start
+MovePlayer()
 maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
 from Editor import Editor

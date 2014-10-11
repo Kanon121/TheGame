@@ -49,9 +49,10 @@ class Entity(object):
                 
                 #block.ID 3 is stairs down
                 if block.ID == 3:
-                   gb.maps.level.loadNextMap()
-
-
+                   gb.onLevel += 1
+                   gb.mapName = 'level' + str(gb.onLevel) + '.level'
+                   gb.LoadGame()
+                   gb.MovePlayer()
 
     
     def update(self, e):

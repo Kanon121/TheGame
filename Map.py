@@ -59,7 +59,6 @@ def RenderMap():
            
            if block == "-":
                 x += 50 
-                #Block = Blocks(-1, x, y, tile_x, tile_y, '',  False)
                 tile_x += 1
                        
            
@@ -149,21 +148,29 @@ def save():
     global new_blocks
     with open(os.getcwd() + '/saves/' + gb.mapName, 'w') as f:
         new_blocks = unloadBlocks(new_blocks)
+        charInfo = [gb.player.rect]
+        new_blocks.append(charInfo)
         gb.pickle.dump(new_blocks, f)
-
+        
+        
 
 def load():
     with open(os.getcwd() + '/saves/' + gb.mapName, 'r') as f:
         new_blocks = gb.pickle.load(f)
         i = 0
         for block in new_blocks:
-            
-            block = Blocks(block[0], block[1], block[2], block[3], block[4])
-            new_blocks[i] = block
+            if type(block[0]) == int:
+                if block[0] == 2:
+                    gb.player.rect.x, gb.player.rect.y = block[1], block[2]                
+                block = Blocks(block[0], block[1], block[2], block[3], block[4])
+                new_blocks[i] = block
 
+            else:
+                gb.player.rect = block[0]
+                new_blocks.remove(block)
             i += 1
             
-        return new_blocks 
+        return [new_blocks, gb.player.rect] 
 
 
 

@@ -31,7 +31,8 @@ if settingUp:
         text.ID = saves[text.ID]
     files = [file for sublist in files for file in sublist]
     for file in files:
-        if file[-10:] == ".custommap":
+        #if file[-10:] == ".custommap":
+        if file[-6:] == ".level":
             saves.append(file)
 
     for save in saves:
@@ -83,8 +84,8 @@ while gb.playing:
             gb.playing = False
             
         if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_ESCAPE:
-            gb.maps.save()
-
+            gb.edit.Saving()
+            
     key = gb.pygame.key.get_pressed()
 
     if key[gb.pygame.K_a]:

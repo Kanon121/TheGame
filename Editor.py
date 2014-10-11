@@ -102,14 +102,7 @@ class Editor():
             gb.cam.rect.y -= 3
         if key[gb.pygame.K_ESCAPE]:
             self.Saving()
-        if key[gb.pygame.K_p]:
-            gb.maps.save()
-            gb.mapName = "save2.save"
-            gb.LoadGame()
-        if key[gb.pygame.K_o]:
-            gb.maps.save()
-            gb.mapName = "save.save"
-            gb.LoadGame()       
+
     def Saving(self):
         waiting = True
         key = gb.pygame.key.get_pressed()
@@ -146,7 +139,7 @@ class Editor():
                     if noBox.collidepoint(posx, posy):
                         waiting = False
                         gb.edit.editing = False
-
+                        gb.playing = False
 
             
             gb.window.screen.blit(saveText, (yesBox.x + 30, yesBox.y + 10))
