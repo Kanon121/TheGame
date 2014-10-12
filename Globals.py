@@ -38,7 +38,7 @@ player = Entity(0, 0, 'guy2.png')
 mapName = "level1.level"
 onLevel = 1
 def LoadGame():
-    maps.loadMap()
+    #maps.loadMap()
     if not reloadGame:
         loadHolder = maps.load() 
         maps.new_blocks = loadHolder[0]
@@ -51,9 +51,15 @@ def MovePlayer():
             start = block.rect.x, block.rect.y
 
     player.rect.x, player.rect.y = start
-MovePlayer()
-maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 
+MovePlayer()
+
+maps.lights = maps.getLights()
+maps.renderLight()
+
+
+#maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
+maps.all_block_types = maps.allTypes
 from Editor import Editor
 edit = Editor()
 if editing == True:

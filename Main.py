@@ -104,9 +104,11 @@ while gb.playing:
         ents.render(gb.cam)
         ents.see()
      
+    
     gb.player.render(gb.cam)
     gb.player.see(gb.maps.new_blocks)
-
+    gb.maps.lighting(gb.cam)
+    
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')
     
