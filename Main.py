@@ -76,8 +76,13 @@ if settingUp:
 while gb.edit.editing:
     gb.edit.RunEditor()
 
-
+pulseInt = 100
 while gb.playing:
+    if pulseInt == 0:
+        gb.maps.LightPulse()
+        pulseInt = 100
+    else:
+        pulseInt -= 1
     time_passed = gb.clock.tick(60)
     for e in gb.pygame.event.get():
         if e.type == gb.pygame.QUIT:
@@ -100,6 +105,7 @@ while gb.playing:
     gb.maps.render(gb.cam)    
 
     gb.cam.update(False) 
+    
     for ents in gb.entities:
         ents.render(gb.cam)
         ents.see()

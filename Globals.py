@@ -2,6 +2,7 @@ import pygame
 from Window import Window
 import sys
 import os
+import random
 playing = True
 editing = False
 reloadGame = False
@@ -38,11 +39,15 @@ player = Entity(0, 0, 'guy2.png')
 mapName = "level1.level"
 onLevel = 1
 def LoadGame():
-    #maps.loadMap()
     if not reloadGame:
         loadHolder = maps.load() 
         maps.new_blocks = loadHolder[0]
         player.rect = loadHolder[1]
+        maps.rendered = []
+        maps.lights = []
+        maps.lights = maps.getLights()
+        maps.renderLight()
+
 
 LoadGame()
 def MovePlayer():
@@ -53,9 +58,6 @@ def MovePlayer():
     player.rect.x, player.rect.y = start
 
 MovePlayer()
-
-maps.lights = maps.getLights()
-maps.renderLight()
 
 
 #maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)

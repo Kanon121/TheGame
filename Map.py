@@ -89,7 +89,7 @@ class Blocks(object):
         self.location = (self.rect.x / 50 ,self.rect.y / 50)
         self.tile_x = self.location[0]
         self.tile_y = self.location[1]
-        
+        self.drawnOver = False
     
     
     def GetImage(self, pic):
@@ -97,7 +97,7 @@ class Blocks(object):
         self.pic = pic
         if not type(pic) is int: 
             img_file = os.path.join('img', self.pic)
-            self.image = gb.pygame.image.load(img_file).convert_alpha()
+            self.image = gb.pygame.image.load(img_file).convert()
             return self.image
                 
 
@@ -196,50 +196,80 @@ def getLights():
 
 class RenderLight():
     def __init__(self, x, y, alpha):
-        self.surface = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)  
+        self.surface = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)
         self.surface.fill((255,255,255, alpha))
-        self.x = x
-        self.y = y
+        self.x = x 
+        self.y = y 
         self.location = x / 50, y / 50
+        self.alpha = alpha
 
 
-def getAdjacents(list):
-    notWall = []
-    for light in list:
+def getAdjacents(source):
+    open = []
+    for adjacent in source:
         for (i, j) in ADJACENTS:
-            check = (light.location[0]+i, light.location[1]+j)
+            check = (adjacent.location[0]+i, adjacent.location[1]+j)
             for block in new_blocks:
                 if check == block.location:
-                    check = block       
-                    if not check.is_wall:
-                        if not check in notWall:
-                            if not check.ID == 4:
-                                notWall.append(check)        
-    return notWall
-        
-def renderLight():
-    alpha = 65
-    notWall = getAdjacents(lights)
-    masterLights = []
-    for block in notWall:
-        light = RenderLight(block.rect.x, block.rect.y, alpha)
-        rendered.append(light)
-    #alpha -= 10
-    notWall = getAdjacents(rendered)
-"""
-    for block in notWall:
-        light = RenderLight(block.rect.x, block.rect.y, alpha)
-        rendered.append(light)
-"""
-  
+                    if block.ID != 4:
+                        if not block.drawnOver:
+                            block.drawnOver = True
+                            if not block.is_wall:
+                                check = block
+                                open.append(check)
+                            
+     
+    return open
 
+def LightPulse():
+    for light in rendered:
+        for torch in lights:
+            distanceX = abs(light.location[0] - torch.location[0])
+            distanceY = abs(light.location[1] - torch.location[1])
+            distance = distanceX + distanceY
+            alpha = 100 - ((distance * 100) / 10)
+        pulse = RenderLight(light.x, light.y, alpha)
+        rendered.remove(light)
+        rendered.append(pulse)
+
+
+def renderLight():
+    brightness = 5
+    alpha = 90
+    open_list = getAdjacents(lights)
+    already_lit = []
+    while brightness != 0:
+        for block in open_list:
+            drawLightOver = RenderLight(block.rect.x, block.rect.y, alpha)
+            rendered.append(drawLightOver)
+            already_lit.append(block)
+        alpha -= 10
+        open_list = []
+        open_list = getAdjacents(already_lit)
+        brightness -= 1
+"""
+brightness = 5
+alpha = 90
+open_list = getAdjacents(lights)
+already_lit = []
+while brightness != 0:        
+    for block in open_list:
+        drawLightOver = RenderLight(block.rect.x, block.rect.y, alpha)
+        rendered.append(drawLightOver)
+        already_lit.append(block)
+    alpha -= 10
+    open_list = []
+    open_list = getAdjacents(already_lit)
+    brightness -= 1
+"""        
+ 
 def lighting(cam):
     darkness = gb.pygame.Surface((1000, 1000), gb.pygame.SRCALPHA)
-    darkness.fill((0,0,0, 100))
+    darkness.fill((0,0,0, 150))
     gb.window.screen.blit(darkness, (0, 0))
     for light in lights:
         s = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)   
-        s.fill((255,255,255, 90))         
+        s.fill((255,255,255, 100))         
         gb.window.screen.blit(s, (light.rect.x - cam.rect.x, light.rect.y - cam.rect.y))
     for light in rendered:
         gb.window.screen.blit(light.surface, (light.x - cam.rect.x, light.y - cam.rect.y))
@@ -275,7 +305,6 @@ def render(cam):
 
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
-masterLights = []
 rendered = []
 lights = []
 gotTypes = AddBlockType()       
