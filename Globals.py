@@ -27,6 +27,8 @@ pygame.init()
 window.CreateWindow(screen_height, screen_width)
 pygame.display.init()
 
+
+
 from Entity import Entity
 from Entity import Enemy
 from Camera import Camera
@@ -47,7 +49,11 @@ def LoadGame():
         maps.lights = []
         maps.lights = maps.getLights()
         maps.renderLight()
-
+        lights = 0
+        for light in maps.lights:
+            lights += 1
+        lights = lights * 400
+        maps.timeToRender = lights
 
 LoadGame()
 def MovePlayer():
@@ -72,4 +78,7 @@ if editing == True:
 clock = pygame.time.Clock()
 
 entities = []
+
+import SettingUp
+
 

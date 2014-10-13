@@ -138,8 +138,8 @@ class Editor():
                         waiting = False
                     if noBox.collidepoint(posx, posy):
                         waiting = False
-                        gb.edit.editing = False
                         gb.playing = False
+                        gb.SettingUp.SetUp(True)
 
             
             gb.window.screen.blit(saveText, (yesBox.x + 30, yesBox.y + 10))

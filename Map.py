@@ -90,7 +90,7 @@ class Blocks(object):
         self.tile_x = self.location[0]
         self.tile_y = self.location[1]
         self.drawnOver = False
-    
+        self.seen = False
     
     def GetImage(self, pic):
     
@@ -197,11 +197,11 @@ def getLights():
 class RenderLight():
     def __init__(self, x, y, alpha):
         self.surface = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)
-        self.surface.fill((255,255,255, alpha))
+        self.surface.fill((255,204,51, alpha))
         self.x = x 
         self.y = y 
         self.location = x / 50, y / 50
-        self.alpha = alpha
+        self.distance = 100
 
 
 def getAdjacents(source):
@@ -218,20 +218,24 @@ def getAdjacents(source):
                                 check = block
                                 open.append(check)
                             
-     
     return open
 
 def LightPulse():
-    for light in rendered:
-        for torch in lights:
-            distanceX = abs(light.location[0] - torch.location[0])
-            distanceY = abs(light.location[1] - torch.location[1])
-            distance = distanceX + distanceY
-            alpha = 100 - ((distance * 100) / 10)
-        pulse = RenderLight(light.x, light.y, alpha)
-        rendered.remove(light)
-        rendered.append(pulse)
-
+    global timeToRender
+    while timeToRender > 0:
+        for light in rendered:
+            for torch in lights:
+                distanceX = abs(light.location[0] - torch.location[0])
+                distanceY = abs(light.location[1] - torch.location[1])
+                distance = distanceX + distanceY
+                if distance < light.distance:
+                    light.distance = distance
+                    alpha = abs(100 - ((distance * 100) / 10))
+            
+            pulse = RenderLight(light.x, light.y, alpha)
+            rendered.remove(light)
+            rendered.append(pulse)
+            timeToRender -= 1
 
 def renderLight():
     brightness = 5
@@ -243,6 +247,7 @@ def renderLight():
             drawLightOver = RenderLight(block.rect.x, block.rect.y, alpha)
             rendered.append(drawLightOver)
             already_lit.append(block)
+
         alpha -= 10
         open_list = []
         open_list = getAdjacents(already_lit)
@@ -269,7 +274,7 @@ def lighting(cam):
     gb.window.screen.blit(darkness, (0, 0))
     for light in lights:
         s = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)   
-        s.fill((255,255,255, 100))         
+        s.fill((255,204,51, 100))         
         gb.window.screen.blit(s, (light.rect.x - cam.rect.x, light.rect.y - cam.rect.y))
     for light in rendered:
         gb.window.screen.blit(light.surface, (light.x - cam.rect.x, light.y - cam.rect.y))
@@ -282,27 +287,47 @@ def render(cam):
 
 
     for block in new_blocks:
-     
-        screenposX = (block.rect.x - cam.rect.x) / 50
-        screenposY = (block.rect.y - cam.rect.y) / 50
-        if screenposX > 800 / 50:
-            block.onScreen = False
-        elif screenposX < -50:
-            block.onScreen = False
-        elif screenposY > 800 / 50:
-            block.onScreen = False
-        elif screenposY < -50:
-            block.onScreen = False
-            
+        if not gb.edit.editing:
+            if block in gb.player.sight or block.drawnOver or block.ID == 4:
+                screenposX = (block.rect.x - cam.rect.x) / 50
+                screenposY = (block.rect.y - cam.rect.y) / 50
+                if screenposX > 800 / 50:
+                    block.onScreen = False
+                elif screenposX < -50:
+                    block.onScreen = False
+                elif screenposY > 800 / 50:
+                    block.onScreen = False
+                elif screenposY < -50:
+                    block.onScreen = False
+                    
+                else:
+                    block.onScreen = True
+
+
+                if block.onScreen == True:                 
+                   
+                    gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
+                        block.rect.y - cam.rect.y))     
         else:
-            block.onScreen = True
+            screenposX = (block.rect.x - cam.rect.x) / 50
+            screenposY = (block.rect.y - cam.rect.y) / 50
+            if screenposX > 800 / 50:
+                block.onScreen = False
+            elif screenposX < -50:
+                block.onScreen = False
+            elif screenposY > 800 / 50:
+                block.onScreen = False
+            elif screenposY < -50:
+                block.onScreen = False
+                
+            else:
+                block.onScreen = True
 
 
-        if block.onScreen == True:                 
-           
-            gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
-                block.rect.y - cam.rect.y))     
-
+            if block.onScreen == True:                 
+               
+                gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
+                    block.rect.y - cam.rect.y))                
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
 rendered = []
@@ -310,5 +335,5 @@ lights = []
 gotTypes = AddBlockType()       
 allTypes = []
 RenderMap()
-
+timeToRender = 0
 

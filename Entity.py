@@ -11,7 +11,7 @@ class Entity(object):
         self.flipped = False
         self.speed = 3
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
-
+        self.sight = []
 
     def setup(self, image):
         img_file = os.path.join('img', image)
@@ -27,7 +27,23 @@ class Entity(object):
 
         
     def see(self, blocks):
-        pass 
+        Sightdistance = 30
+        onBlock = []
+        for block in gb.maps.new_blocks:
+            if self.rect.colliderect(block):
+                onBlock.append(block)
+
+        
+        open_list = gb.maps.getAdjacents(onBlock)
+        already_seen = []
+        while Sightdistance != 0:
+            for block in open_list:
+                already_seen.append(block)
+
+            open_list = []
+            open_list = gb.maps.getAdjacents(already_seen)
+            Sightdistance -= 1
+
     
     def move(self, dx, dy):
 
@@ -53,7 +69,15 @@ class Entity(object):
                    gb.mapName = 'level' + str(gb.onLevel) + '.level'
                    gb.LoadGame()
                    gb.MovePlayer()
-
+                
+                if block.ID == 7:
+                    gb.maps.new_blocks.remove(block)
+                    newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 'door_open2.png', False)
+                    gb.maps.new_blocks.append(newblock)
+                if block.ID == 8:
+                    gb.maps.new_blocks.remove(block)
+                    newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 'door_open1.png', False)
+                    gb.maps.new_blocks.append(newblock)
     
     def update(self, e):
         spx = self.speed
