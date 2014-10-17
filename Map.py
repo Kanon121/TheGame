@@ -2,6 +2,7 @@ import Globals as gb
 import ConfigParser
 import os
 
+
 class AddBlockType(object):
     def __init__(self):
         self.load_file()
@@ -13,7 +14,6 @@ class AddBlockType(object):
         self.all_types = parser.get("level", "level").split("\n")
 
         
-
 
 new_blocks = []
 def RenderMap():
@@ -50,6 +50,13 @@ def RenderMap():
                 block = Blocks(7, x, y, 'door_closed1.png', True)
            if block == "$":
                 block = Blocks(8, x, y, 'door_closed2.png', True)
+
+           if block == "^":
+                block = Blocks(9, x, y, 'door_closedLock1.png', True)
+           if block == "&":
+                block = Blocks(10, x, y, 'door_closedLock2.png', True)
+    
+
            if block != "-":
                 block.rect.x = x
                 block.rect.y = y
@@ -91,7 +98,7 @@ class Blocks(object):
         self.tile_y = self.location[1]
         self.drawnOver = False
         self.seen = False
-    
+        
     def GetImage(self, pic):
     
         self.pic = pic
@@ -101,25 +108,25 @@ class Blocks(object):
             return self.image
                 
 
-def cycleBlock(selected):
-    
+def cycleBlock(selected, types):
+    if types == "block":
 
-    for loc, blocks in enumerate(all_block_types):
-        if selected.ID == blocks.ID:
-            whereIs = loc
-            end = len(all_block_types) - 1
-            if whereIs != end:
-                selected = all_block_types[whereIs + 1]
-            
-            
-            if whereIs == end:
-                selected = all_block_types[0]
+        for loc, blocks in enumerate(all_block_types):
+            if selected.ID == blocks.ID:
+                whereIs = loc
+                end = len(all_block_types) - 1
+                if whereIs != end:
+                    selected = all_block_types[whereIs + 1]
                 
-            break    
-            #selected = all_block_types[0]
-    
-    
-    return selected
+                
+                if whereIs == end:
+                    selected = all_block_types[0]
+                    
+                break    
+                #selected = all_block_types[0]
+        
+        
+        return selected
 
 
 
@@ -166,7 +173,7 @@ def load():
             if type(block[0]) == int:
                 if block[0] == 2:
                     gb.player.rect.x, gb.player.rect.y = block[1], block[2]                
-                block = Blocks(block[0], block[1], block[2], block[3], block[4])
+                block = Blocks(block[0],block[1],block[2],block[3],block[4])
                 new_blocks[i] = block
 
             else:
@@ -177,31 +184,12 @@ def load():
         return [new_blocks, gb.player.rect] 
 
 
-"""
-def getAllBlockTypes(new_blocks):
-    gotten = []
-    for block in new_blocks:
-        if block.ID not in gotten:
-            all_block_types.append(block)
-            gotten.append(block.ID)
-    return all_block_types
- """
-# Simplified this in AddBlockType. Also much faster
-            
-def getLights():
-    for block in new_blocks:
-        if block.ID == 4:
-            lights.append(block)
-    return lights
 
-class RenderLight():
-    def __init__(self, x, y, alpha):
-        self.surface = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)
-        self.surface.fill((255,204,51, alpha))
-        self.x = x 
-        self.y = y 
-        self.location = x / 50, y / 50
-        self.distance = 100
+
+
+
+
+
 
 
 def getAdjacents(source, door):
@@ -229,97 +217,16 @@ def getAdjacents(source, door):
      
     return open
 
-def LightPulse():
-    global timeToRender
-    while timeToRender > 0:
-        for light in rendered:
-            for torch in lights:
-                distanceX = abs(light.location[0] - torch.location[0])
-                distanceY = abs(light.location[1] - torch.location[1])
-                distance = distanceX + distanceY
-                if distance < light.distance:
-                    light.distance = distance
-                    alpha = abs(100 - ((distance * 100) / 10))
-            
-            pulse = RenderLight(light.x, light.y, alpha)
-            rendered.remove(light)
-            rendered.append(pulse)
-            timeToRender -= 1
-
-def renderLight():
-    brightness = 5
-    alpha = 90
-    open_list = getAdjacents(lights, False)
-    already_lit = []
-    while brightness != 0:
-        for block in open_list:
-            drawLightOver = RenderLight(block.rect.x, block.rect.y, alpha)
-            rendered.append(drawLightOver)
-            already_lit.append(block)
-
-        alpha -= 10
-        open_list = []
-        open_list = getAdjacents(already_lit, False)
-        brightness -= 1
-"""
-brightness = 5
-alpha = 90
-open_list = getAdjacents(lights)
-already_lit = []
-while brightness != 0:        
-    for block in open_list:
-        drawLightOver = RenderLight(block.rect.x, block.rect.y, alpha)
-        rendered.append(drawLightOver)
-        already_lit.append(block)
-    alpha -= 10
-    open_list = []
-    open_list = getAdjacents(already_lit)
-    brightness -= 1
-"""        
- 
-def lighting(cam):
-    darkness = gb.pygame.Surface((1000, 1000), gb.pygame.SRCALPHA)
-    darkness.fill((0,0,0, 150))
-    gb.window.screen.blit(darkness, (0, 0))
-    for light in lights:
-        s = gb.pygame.Surface((50,50), gb.pygame.SRCALPHA)   
-        s.fill((255,204,51, 100))         
-        gb.window.screen.blit(s, (light.rect.x - cam.rect.x, light.rect.y - cam.rect.y))
-    for light in rendered:
-        gb.window.screen.blit(light.surface, (light.x - cam.rect.x, light.y - cam.rect.y))
-
-                    
                 
-
-                
-def render(cam):
+def render():
+    
 
 
     for block in new_blocks:
-        if not gb.edit.editing:
-            if block in gb.player.sight or block.drawnOver or block.ID == 4:
-                screenposX = (block.rect.x - cam.rect.x) / 50
-                screenposY = (block.rect.y - cam.rect.y) / 50
-                if screenposX > 800 / 50:
-                    block.onScreen = False
-                elif screenposX < -50:
-                    block.onScreen = False
-                elif screenposY > 800 / 50:
-                    block.onScreen = False
-                elif screenposY < -50:
-                    block.onScreen = False
-                    
-                else:
-                    block.onScreen = True
 
-
-                if block.onScreen == True:                 
-                   
-                    gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
-                        block.rect.y - cam.rect.y))     
-        else:
-            screenposX = (block.rect.x - cam.rect.x) / 50
-            screenposY = (block.rect.y - cam.rect.y) / 50
+        if block in gb.player.sight or gb.edit.editing:
+            screenposX = (block.rect.x - gb.cam.rect.x) / 50
+            screenposY = (block.rect.y - gb.cam.rect.y) / 50
             if screenposX > 800 / 50:
                 block.onScreen = False
             elif screenposX < -50:
@@ -334,15 +241,15 @@ def render(cam):
 
 
             if block.onScreen == True:                 
-               
-                gb.window.screen.blit(block.image,(block.rect.x - cam.rect.x, 
-                    block.rect.y - cam.rect.y))                
+                
+                gb.window.screen.blit(block.image,(block.rect.x - gb.cam.rect.x, 
+                    block.rect.y - gb.cam.rect.y))    
+         
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
-rendered = []
 lights = []
 gotTypes = AddBlockType()       
 allTypes = []
 RenderMap()
-timeToRender = 0
+
 

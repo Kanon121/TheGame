@@ -1,3 +1,7 @@
 [level]
 
-level = -.#Ss!@$t%
+level = -.#Ss!@$t%^&
+
+[objects]
+
+objects = C 

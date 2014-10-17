@@ -16,7 +16,7 @@ while gb.edit.editing:
 
 while gb.playing:
 
-    gb.maps.LightPulse()
+    
 
     time_passed = gb.clock.tick(60)
     for e in gb.pygame.event.get():
@@ -37,7 +37,9 @@ while gb.playing:
     if key[gb.pygame.K_w]:
         gb.player.update("up")
 
-    gb.maps.render(gb.cam)    
+    gb.maps.render()    
+
+    gb.objects.render()
 
     gb.cam.update(False) 
     
@@ -48,7 +50,7 @@ while gb.playing:
     
     gb.player.render(gb.cam)
     gb.player.see(gb.maps.new_blocks)
-    gb.maps.lighting(gb.cam)
+
     
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')

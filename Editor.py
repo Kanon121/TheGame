@@ -6,6 +6,7 @@ class Editor():
         self.draggingR = False
         self.selected = gb.maps.all_block_types[0]
         self.mouseHover = True
+        self.mode = "blocks"
 
 
     def makeBlock(self):
@@ -27,59 +28,95 @@ class Editor():
             gb.maps.new_blocks.append(newblock)
          
     def RunEditor(self):
+        
+        if self.mode == "blocks":
 
-        ev = gb.pygame.event.get()
-        for e in ev:
-            if e.type == gb.pygame.QUIT:
-                self.editing = False
-                self.Saving()
-                
-                
-            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
-                self.mouseHover = not self.mouseHover
-           
-            if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_c:
-                self.selected = gb.maps.cycleBlock(self.selected)                    
-                
+            ev = gb.pygame.event.get()
+            for e in ev:
+                if e.type == gb.pygame.QUIT:
+                    self.editing = False
                     
-            if e.type == gb.pygame.MOUSEBUTTONDOWN:
-                if e.button == 3:
-                    self.draggingL = True
+                    
+                    
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
+                    self.mouseHover = not self.mouseHover
+               
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_c:
+                    self.selected = gb.maps.cycleBlock(self.selected, "block")         
+        
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_m:
+                    self.mode = "obj"
+
+                if e.type == gb.pygame.MOUSEBUTTONDOWN:
+                    if e.button == 3:
+                        self.draggingR = True
+                        for block in gb.maps.new_blocks:
+                            if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
+                                e.pos[1] + gb.cam.rect.y):
+                                gb.maps.new_blocks.remove(block)
+                    
+                    if e.button == 1:                
+                        self.makeBlock()
+                        self.draggingL = True
+                    
+                    
+                    if e.button == 2:
+                        for block in gb.maps.new_blocks:
+                            if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
+                                e.pos[1] + gb.cam.rect.y):
+                                self.selected = block
+
+                if e.type == gb.pygame.MOUSEBUTTONUP:
+                    if e.button == 3:
+                        self.draggingR = False
+                    if e.button == 1:
+                        self.draggingL = False
+
+
+                if self.draggingR:
+                    posx, posy = gb.pygame.mouse.get_pos()
+                    
                     for block in gb.maps.new_blocks:
-                        if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
-                            e.pos[1] + gb.cam.rect.y):
+                        if block.rect.collidepoint(posx + gb.cam.rect.x,
+                            posy + gb.cam.rect.y):
                             gb.maps.new_blocks.remove(block)
+
+                if self.draggingL:
+                    self.makeBlock()            
+        else:
+            ev = gb.pygame.event.get()
+            for e in ev:
+                if e.type == gb.pygame.QUIT:
+                    self.editing = False
+                    self.Saving()
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
+                    self.mouseHover = not self.mouseHover
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_c:
+                    self.selected = gb.maps.cycleBlock(self.selected, "obj") 
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_m:
+                    self.mode = "blocks"
+                if e.type == gb.pygame.MOUSEBUTTONDOWN:
+                    if e.button == 3:
+                        for obj in gb.objects.all_objects:
+                            if obj.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
+                                e.pos[1] + gb.cam.rect.y):
+                                gb.objects.all_objects.remove(obj)
+                    if e.button == 2:
+                        for obj in gb.objects.all_objects:
+                            if obj.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
+                                e.pos[1] + gb.cam.rect.y)
+                                self.selected = obj
+                    if e.button == 1:
+                        self.makeObject()
                 
-                if e.button == 1:                
-                    self.makeBlock()
-                    self.draggingR = True
-                
-                
-                if e.button == 2:
-                    for block in gb.maps.new_blocks:
-                        if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
-                            e.pos[1] + gb.cam.rect.y):
-                            self.selected = block
-
-            if e.type == gb.pygame.MOUSEBUTTONUP:
-                if e.button == 3:
-                    self.draggingL = False
-                if e.button == 1:
-                    self.draggingR = False
-
-
-            if self.draggingL:
-                posx, posy = gb.pygame.mouse.get_pos()
-                
-                for block in gb.maps.new_blocks:
-                    if block.rect.collidepoint(posx + gb.cam.rect.x,
-                        posy + gb.cam.rect.y):
-                        gb.maps.new_blocks.remove(block)
-
-            if self.draggingR:
-                self.makeBlock()            
-
-        gb.maps.render(gb.cam)
+                        
+            
+        
+        
+        
+        
+        
+        gb.maps.render()
         if self.mouseHover:
             posx, posy = gb.pygame.mouse.get_pos()
             gb.window.screen.blit(self.selected.image, (posx - 25 , posy - 25))
@@ -113,18 +150,22 @@ class Editor():
             event = gb.pygame.event.poll()
             if event.type == gb.pygame.QUIT:
                 waiting = False
-            gb.maps.render(gb.cam)
+            gb.maps.render()
             
             saveText = myfont.render("Save", 1, (255, 255, 255))
             quitText = myfont.render("Quit", 1, (255, 255, 255))
             
 
            
-            yesBox = gb.pygame.draw.rect(gb.window.screen, (color), (((800/3)), 100, 125, 50))  
-            noBox = gb.pygame.draw.rect(gb.window.screen, (color), ((((800/4)*2)), 100, 125, 50))
+            yesBox = gb.pygame.draw.rect(gb.window.screen, (color), 
+                (((800/3)), 100, 125, 50))  
+            noBox = gb.pygame.draw.rect(gb.window.screen, (color), 
+                ((((800/4)*2)), 100, 125, 50))
             
-            yesOutline = gb.pygame.draw.rect(gb.window.screen, (255,100,100), (yesBox.x, yesBox.y, 125, 50), 2)
-            noOutline = gb.pygame.draw.rect(gb.window.screen, (255,100,100), (noBox.x, noBox.y, 125, 50), 2)
+            yesOutline = gb.pygame.draw.rect(gb.window.screen, (255,100,100), 
+                (yesBox.x, yesBox.y, 125, 50), 2)
+            noOutline = gb.pygame.draw.rect(gb.window.screen, (255,100,100), 
+                (noBox.x, noBox.y, 125, 50), 2)
             
             posx, posy = gb.pygame.mouse.get_pos() 
             if event.type == gb.pygame.KEYDOWN and event.key == gb.pygame.K_ESCAPE:

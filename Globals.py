@@ -33,6 +33,7 @@ from Entity import Entity
 from Entity import Enemy
 from Camera import Camera
 import Map as maps
+import Objects as objects
 
 cam = Camera(0, 0, screen_width, screen_height)
 
@@ -45,15 +46,7 @@ def LoadGame():
         loadHolder = maps.load() 
         maps.new_blocks = loadHolder[0]
         player.rect = loadHolder[1]
-        maps.rendered = []
-        maps.lights = []
-        maps.lights = maps.getLights()
-        maps.renderLight()
-        lights = 0
-        for light in maps.lights:
-            lights += 1
-        lights = lights * 400
-        maps.timeToRender = lights
+        
 
 LoadGame()
 def MovePlayer():
@@ -65,9 +58,14 @@ def MovePlayer():
 
 MovePlayer()
 
-
-#maps.all_block_types = maps.getAllBlockTypes(maps.new_blocks)
 maps.all_block_types = maps.allTypes
+
+
+chest = objects.Objects("chest.png", 1, 100, 100)
+
+
+
+
 from Editor import Editor
 edit = Editor()
 if editing == True:

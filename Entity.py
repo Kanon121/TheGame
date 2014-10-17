@@ -11,8 +11,9 @@ class Entity(object):
         self.flipped = False
         self.speed = 3
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
+        self.keys = 1
         self.sight = []
-
+    
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
@@ -51,6 +52,7 @@ class Entity(object):
             self.sight.append(block)
         for block in walls:
             self.sight.append(block)
+    
     def move(self, dx, dy):
 
         self.rect.x += dx
@@ -76,15 +78,32 @@ class Entity(object):
                    gb.LoadGame()
                    gb.MovePlayer()
                 
-                if block.ID == 7:
+
+                # Closed door 2
+                if block.ID == 7: 
                     gb.maps.new_blocks.remove(block)
                     newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 'door_open2.png', False)
                     gb.maps.new_blocks.append(newblock)
+                # Closed door 1
                 if block.ID == 8:
                     gb.maps.new_blocks.remove(block)
                     newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 'door_open1.png', False)
                     gb.maps.new_blocks.append(newblock)
-    
+                # locked door 1
+                if block.ID == 9:
+                    if self.keys:
+                        self.keys -= 1
+                        gb.maps.new_blocks.remove(block)
+                        newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 'door_open2.png', False)
+                        gb.maps.new_blocks.append(newblock)
+                # locked door 2
+                if block.ID == 10:
+                    if self.keys:
+                        self.keys -= 1
+                        gb.maps.new_blocks.remove(block)
+                        newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 'door_open1.png', False)
+                        gb.maps.new_blocks.append(newblock)
+
     def update(self, e):
         spx = self.speed
         spy = self.speed

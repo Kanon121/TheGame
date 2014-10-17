@@ -61,10 +61,11 @@ def SetUp(settingUp):
                 gb.window.screen.blit(text, (30, 10 + offset))
                 offset += 30
 
-            if event.type == gb.pygame.KEYDOWN:
-                keyHit = chr(event.key)
-                typed.append(keyHit)
-            
+            if event.type == gb.pygame.QUIT:
+                settingUp = False
+                exit()
+               # keyHit = chr(event.key)
+     
 
             gb.pygame.display.flip()
             gb.window.RenderWindow('black')
