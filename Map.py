@@ -204,20 +204,29 @@ class RenderLight():
         self.distance = 100
 
 
-def getAdjacents(source):
+def getAdjacents(source, door):
     open = []
     for adjacent in source:
         for (i, j) in ADJACENTS:
             check = (adjacent.location[0]+i, adjacent.location[1]+j)
             for block in new_blocks:
                 if check == block.location:
-                    if block.ID != 4:
-                        if not block.drawnOver:
-                            block.drawnOver = True
-                            if not block.is_wall:
-                                check = block
-                                open.append(check)
-                            
+                    check = block
+
+                    if door:
+                        if not block.seen:
+                            block.seen = True
+                            open.append(check)
+
+
+                    else:
+                        if block.ID != 4:  
+                            if not block.drawnOver:
+                                block.drawnOver = True
+                                if not block.is_wall:        
+                                    open.append(check)
+    
+     
     return open
 
 def LightPulse():
@@ -240,7 +249,7 @@ def LightPulse():
 def renderLight():
     brightness = 5
     alpha = 90
-    open_list = getAdjacents(lights)
+    open_list = getAdjacents(lights, False)
     already_lit = []
     while brightness != 0:
         for block in open_list:
@@ -250,7 +259,7 @@ def renderLight():
 
         alpha -= 10
         open_list = []
-        open_list = getAdjacents(already_lit)
+        open_list = getAdjacents(already_lit, False)
         brightness -= 1
 """
 brightness = 5

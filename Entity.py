@@ -34,17 +34,23 @@ class Entity(object):
                 onBlock.append(block)
 
         
-        open_list = gb.maps.getAdjacents(onBlock)
+        open_list = gb.maps.getAdjacents(onBlock, True)
         already_seen = []
-        while Sightdistance != 0:
+        walls = []
+        while (open_list):
             for block in open_list:
-                already_seen.append(block)
-
+                if not block.is_wall:
+                    already_seen.append(block)
+                else:
+                    walls.append(block)
             open_list = []
-            open_list = gb.maps.getAdjacents(already_seen)
+            open_list = gb.maps.getAdjacents(already_seen, True)
             Sightdistance -= 1
-
-    
+        
+        for block in already_seen:
+            self.sight.append(block)
+        for block in walls:
+            self.sight.append(block)
     def move(self, dx, dy):
 
         self.rect.x += dx
