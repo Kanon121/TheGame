@@ -98,7 +98,8 @@ class Blocks(object):
         self.tile_y = self.location[1]
         self.drawnOver = False
         self.seen = False
-        
+       
+
     def GetImage(self, pic):
     
         self.pic = pic
@@ -123,10 +124,20 @@ def cycleBlock(selected, types):
                     selected = all_block_types[0]
                     
                 break    
-                #selected = all_block_types[0]
+
+    if types == "obj":
+        for loc, obj in enumerate(gb.objects.all_object_types):
+            if selected.ID == obj.ID:
+                whereIs = loc
+                end = len(gb.objects.all_object_types) - 1
+                if whereIs != end:
+                    selected = gb.objects.all_object_types[whereIs + 1]
+                if whereIs == end:
+                    selected = gb.objects.all_object_types[0]
+
+                break
         
-        
-        return selected
+    return selected
 
 
 
@@ -137,8 +148,7 @@ def inherent(selected, x, y):
 
 def loadMap():
     global level
-    level = Level() 
-    level.load_file("level")
+    level = AddBlockType() 
     RenderMap()
         
 
@@ -153,45 +163,66 @@ def unloadBlocks(new_blocks):
     return new_blocks
         
 
+def unloadObjects(objects):
+    i = 0
+    for obj in objects:
+        stored = [obj.ID, obj.pic, obj.rect.x, obj.rect.y]
+        objects[i] = stored
+        i += 1
+    return objects
+
+
 
 
 def save():
     global new_blocks
     with open(os.getcwd() + '/saves/' + gb.mapName, 'w') as f:
         new_blocks = unloadBlocks(new_blocks)
+        gb.objects.all_objects = unloadObjects(gb.objects.all_objects)
         charInfo = [gb.player.rect]
+        if gb.objects.all_objects:
+            for obj in gb.objects.all_objects:
+                new_blocks.append(obj)
+
         new_blocks.append(charInfo)
         gb.pickle.dump(new_blocks, f)
+
+        
         
         
 
 def load():
     with open(os.getcwd() + '/saves/' + gb.mapName, 'r') as f:
         new_blocks = gb.pickle.load(f)
-        i = 0
+        objects = []
+        i = 0        
+        gb.player.rect = new_blocks[-1][0]
+        new_blocks.remove(new_blocks[-1])
+        
         for block in new_blocks:
-            if type(block[0]) == int:
+            if block[0] > 99:
+
+                block = gb.objects.Objects(block[0], 
+                    block[1], block[2], block[3])
+                objects.append(block)
+                new_blocks[i] = block
+                i += 1
+
+            elif block[0] < 99:
                 if block[0] == 2:
-                    gb.player.rect.x, gb.player.rect.y = block[1], block[2]                
+                    gb.player.rect.x, gb.player.rect.y = block[1], block[2]
+
                 block = Blocks(block[0],block[1],block[2],block[3],block[4])
                 new_blocks[i] = block
+                i += 1
+        for obj in objects:
+            if obj in new_blocks:
+                new_blocks.remove(obj)
 
-            else:
-                gb.player.rect = block[0]
-                new_blocks.remove(block)
-            i += 1
-            
-        return [new_blocks, gb.player.rect] 
+        return [new_blocks, gb.player.rect, objects]      
+        
 
-
-
-
-
-
-
-
-
-
+    
 def getAdjacents(source, door):
     open = []
     for adjacent in source:
@@ -223,7 +254,11 @@ def render():
 
 
     for block in new_blocks:
-
+        
+        
+        
+        
+        
         if block in gb.player.sight or gb.edit.editing:
             screenposX = (block.rect.x - gb.cam.rect.x) / 50
             screenposY = (block.rect.y - gb.cam.rect.y) / 50
@@ -245,6 +280,11 @@ def render():
                 gb.window.screen.blit(block.image,(block.rect.x - gb.cam.rect.x, 
                     block.rect.y - gb.cam.rect.y))    
          
+    for obj in gb.objects.all_objects:
+        gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
+            obj.rect.y - gb.cam.rect.y))
+
+
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
 lights = []

@@ -7,30 +7,42 @@ class Editor():
         self.selected = gb.maps.all_block_types[0]
         self.mouseHover = True
         self.mode = "blocks"
-
-
-    def makeBlock(self):
-        emptySpace = True
-        posx, posy = gb.pygame.mouse.get_pos()
-        posx += gb.cam.rect.x
-        posy += gb.cam.rect.y
-        roundX = int(50 * round(posx / 50))
-        roundY = int(50 * round(posy / 50))
-        newblock = gb.maps.inherent(self.selected, roundX, roundY)
+    def makeBlock(self, type):
+        if type == "block":
+            emptySpace = True
+            posx, posy = gb.pygame.mouse.get_pos()
+            posx += gb.cam.rect.x
+            posy += gb.cam.rect.y
+            roundX = int(50 * round(posx / 50))
+            roundY = int(50 * round(posy / 50))
+            newblock = gb.maps.inherent(self.selected, roundX, roundY)
+            
+            for block in gb.maps.new_blocks:
+                if block.rect.collidepoint(posx, posy): 
+                    gb.maps.new_blocks.remove(block)
+                    gb.maps.new_blocks.append(newblock)
+                    emptySpace = False
+                    break
+            if emptySpace:
+                gb.maps.new_blocks.append(newblock)  
         
-        for block in gb.maps.new_blocks:
-            if block.rect.collidepoint(posx, posy): 
-                gb.maps.new_blocks.remove(block)
-                gb.maps.new_blocks.append(newblock)
-                emptySpace = False
-                break
-        if emptySpace:
-            gb.maps.new_blocks.append(newblock)
-         
+        
+        
+        elif type == "object":
+            posx, posy = gb.pygame.mouse.get_pos()
+            posx += gb.cam.rect.x
+            posy += gb.cam.rect.y
+            roundX = int(50 * round(posx / 50))
+            roundY = int(50 * round(posy / 50))
+            newobject = gb.objects.inherent(self.selected, roundX, roundY)
+            gb.objects.all_objects.append(newobject)
+            for block in gb.maps.new_blocks:
+                if block.rect.collidepoint(posx, posy):
+                    block.drawnOver = newobject           
+    
     def RunEditor(self):
         
         if self.mode == "blocks":
-
             ev = gb.pygame.event.get()
             for e in ev:
                 if e.type == gb.pygame.QUIT:
@@ -46,7 +58,7 @@ class Editor():
         
                 if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_m:
                     self.mode = "obj"
-
+                    self.selected = gb.objects.all_object_types[0]
                 if e.type == gb.pygame.MOUSEBUTTONDOWN:
                     if e.button == 3:
                         self.draggingR = True
@@ -56,7 +68,7 @@ class Editor():
                                 gb.maps.new_blocks.remove(block)
                     
                     if e.button == 1:                
-                        self.makeBlock()
+                        self.makeBlock("block")
                         self.draggingL = True
                     
                     
@@ -65,14 +77,11 @@ class Editor():
                             if block.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
                                 e.pos[1] + gb.cam.rect.y):
                                 self.selected = block
-
                 if e.type == gb.pygame.MOUSEBUTTONUP:
                     if e.button == 3:
                         self.draggingR = False
                     if e.button == 1:
                         self.draggingL = False
-
-
                 if self.draggingR:
                     posx, posy = gb.pygame.mouse.get_pos()
                     
@@ -80,10 +89,10 @@ class Editor():
                         if block.rect.collidepoint(posx + gb.cam.rect.x,
                             posy + gb.cam.rect.y):
                             gb.maps.new_blocks.remove(block)
-
                 if self.draggingL:
-                    self.makeBlock()            
+                    self.makeBlock("block")            
         else:
+            
             ev = gb.pygame.event.get()
             for e in ev:
                 if e.type == gb.pygame.QUIT:
@@ -95,6 +104,7 @@ class Editor():
                     self.selected = gb.maps.cycleBlock(self.selected, "obj") 
                 if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_m:
                     self.mode = "blocks"
+                    self.selected = gb.maps.all_block_types[0]
                 if e.type == gb.pygame.MOUSEBUTTONDOWN:
                     if e.button == 3:
                         for obj in gb.objects.all_objects:
@@ -104,10 +114,10 @@ class Editor():
                     if e.button == 2:
                         for obj in gb.objects.all_objects:
                             if obj.rect.collidepoint(e.pos[0] + gb.cam.rect.x,
-                                e.pos[1] + gb.cam.rect.y)
+                                e.pos[1] + gb.cam.rect.y):
                                 self.selected = obj
                     if e.button == 1:
-                        self.makeObject()
+                        self.makeBlock("object")
                 
                         
             
@@ -122,11 +132,9 @@ class Editor():
             gb.window.screen.blit(self.selected.image, (posx - 25 , posy - 25))
             outLine = gb.pygame.draw.rect(gb.window.screen, (100, 200, 200),
                 (posx - 25, posy - 25, 51, 51), 2)
-
         gb.pygame.display.flip()    
         gb.window.RenderWindow('black')    
  
-
         key = gb.pygame.key.get_pressed()
         
         if key[gb.pygame.K_a]:
@@ -139,7 +147,6 @@ class Editor():
             gb.cam.rect.y -= 3
         if key[gb.pygame.K_ESCAPE]:
             self.Saving()
-
     def Saving(self):
         waiting = True
         key = gb.pygame.key.get_pressed()
@@ -155,7 +162,6 @@ class Editor():
             saveText = myfont.render("Save", 1, (255, 255, 255))
             quitText = myfont.render("Quit", 1, (255, 255, 255))
             
-
            
             yesBox = gb.pygame.draw.rect(gb.window.screen, (color), 
                 (((800/3)), 100, 125, 50))  
@@ -181,7 +187,6 @@ class Editor():
                         waiting = False
                         gb.playing = False
                         gb.SettingUp.SetUp(True)
-
             
             gb.window.screen.blit(saveText, (yesBox.x + 30, yesBox.y + 10))
             gb.window.screen.blit(quitText, (noBox.x + 30, noBox.y + 10))

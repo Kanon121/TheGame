@@ -39,7 +39,7 @@ while gb.playing:
 
     gb.maps.render()    
 
-    gb.objects.render()
+    
 
     gb.cam.update(False) 
     

@@ -46,24 +46,25 @@ def LoadGame():
         loadHolder = maps.load() 
         maps.new_blocks = loadHolder[0]
         player.rect = loadHolder[1]
-        
+        objects.all_objects = loadHolder[2]
+    else:
+        maps.loadMap()
 
 LoadGame()
 def MovePlayer():
     for block in maps.new_blocks:
+        
         if block.ID == 2:
+            
             start = block.rect.x, block.rect.y
 
+    
     player.rect.x, player.rect.y = start
 
-MovePlayer()
+if not reloadGame:
+    MovePlayer()
 
 maps.all_block_types = maps.allTypes
-
-
-chest = objects.Objects("chest.png", 1, 100, 100)
-
-
 
 
 from Editor import Editor
@@ -78,5 +79,4 @@ clock = pygame.time.Clock()
 entities = []
 
 import SettingUp
-
 
