@@ -82,28 +82,42 @@ class Entity(object):
                 # Closed door 2
                 if block.ID == 7: 
                     gb.maps.new_blocks.remove(block)
-                    newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 'door_open2.png', False)
+                    newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 
+                        'door_open2.png', False)
                     gb.maps.new_blocks.append(newblock)
                 # Closed door 1
                 if block.ID == 8:
                     gb.maps.new_blocks.remove(block)
-                    newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 'door_open1.png', False)
+                    newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 
+                        'door_open1.png', False)
                     gb.maps.new_blocks.append(newblock)
                 # locked door 1
                 if block.ID == 9:
                     if self.keys:
                         self.keys -= 1
                         gb.maps.new_blocks.remove(block)
-                        newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 'door_open2.png', False)
+                        newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 
+                            'door_open2.png', False)
                         gb.maps.new_blocks.append(newblock)
                 # locked door 2
                 if block.ID == 10:
                     if self.keys:
                         self.keys -= 1
                         gb.maps.new_blocks.remove(block)
-                        newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 'door_open1.png', False)
+                        newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 
+                            'door_open1.png', False)
                         gb.maps.new_blocks.append(newblock)
 
+    
+        for obj in gb.objects.all_objects:
+            if self.rect.colliderect(obj):
+                if obj.ID == 100:    #Chest + 1 key
+                    gb.maps.displayKey(obj)
+                    self.keys += 1
+                    gb.objects.all_objects.remove(obj)
+    
+    
+    
     def update(self, e):
         spx = self.speed
         spy = self.speed

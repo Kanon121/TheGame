@@ -47,3 +47,7 @@ def GetTypes():
             
 ObjTypes = AddObjectType()
 GetTypes()
+
+class Items(Objects):
+    pass
+    

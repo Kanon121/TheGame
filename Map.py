@@ -248,16 +248,15 @@ def getAdjacents(source, door):
      
     return open
 
-                
+def displayKey(obj):    
+    img_file = os.path.join('img', 'key.png')
+    keyimage = gb.pygame.image.load(img_file)
+    keyrect = keyimage.get_rect()
+    keyrect.x = obj.rect.x
+    keyrect.y = obj.rect.y
+
 def render():
-    
-
-
-    for block in new_blocks:
-        
-        
-        
-        
+    for block in new_blocks:       
         
         if block in gb.player.sight or gb.edit.editing:
             screenposX = (block.rect.x - gb.cam.rect.x) / 50
@@ -281,10 +280,12 @@ def render():
                     block.rect.y - gb.cam.rect.y))    
          
     for obj in gb.objects.all_objects:
+        
         gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
             obj.rect.y - gb.cam.rect.y))
 
-
+         
+        
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
 lights = []
