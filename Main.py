@@ -51,7 +51,9 @@ while gb.playing:
     gb.player.render(gb.cam)
     gb.player.see(gb.maps.new_blocks)
 
-    
+    gb.overlay.render()
+
+
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')
     

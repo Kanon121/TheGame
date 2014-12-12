@@ -34,6 +34,10 @@ from Entity import Enemy
 from Camera import Camera
 import Map as maps
 import Objects as objects
+from Overlay import Overlay
+
+overlay = Overlay()
+
 
 cam = Camera(0, 0, screen_width, screen_height)
 

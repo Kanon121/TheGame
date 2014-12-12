@@ -169,6 +169,7 @@ def unloadObjects(objects):
         stored = [obj.ID, obj.pic, obj.rect.x, obj.rect.y]
         objects[i] = stored
         i += 1
+
     return objects
 
 
@@ -216,6 +217,10 @@ def load():
                 new_blocks[i] = block
                 i += 1
         for obj in objects:
+            if obj.ID == 102:
+                obj.direction = "up"
+            if obj.ID == 103:
+                obj.direction = "left"
             if obj in new_blocks:
                 new_blocks.remove(obj)
 
@@ -248,12 +253,7 @@ def getAdjacents(source, door):
      
     return open
 
-def displayKey(obj):    
-    img_file = os.path.join('img', 'key.png')
-    keyimage = gb.pygame.image.load(img_file)
-    keyrect = keyimage.get_rect()
-    keyrect.x = obj.rect.x
-    keyrect.y = obj.rect.y
+
 
 def render():
     for block in new_blocks:       
@@ -279,13 +279,39 @@ def render():
                 gb.window.screen.blit(block.image,(block.rect.x - gb.cam.rect.x, 
                     block.rect.y - gb.cam.rect.y))    
          
-    for obj in gb.objects.all_objects:
-        
-        gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
-            obj.rect.y - gb.cam.rect.y))
 
-         
+
+    for obj in gb.objects.all_objects:
+        speed = 1
+        gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
+            obj.rect.y - gb.cam.rect.y))       
+       
+    
+        if obj.ID == 102 or obj.ID == 103:
+            if obj.direction == "up":
+                obj.rect.y -= speed
+            elif obj.direction == "down":
+                obj.rect.y += speed
+            elif obj.direction == "right":
+                obj.rect.x += speed
+            elif obj.direction == "left":
+                obj.rect.x -= speed
         
+
+        
+            for block in new_blocks:
+                if block.is_wall:
+                    if obj.rect.colliderect(block):
+                        if obj.direction == "up":
+                            obj.direction = "down"
+                        elif obj.direction == "down":
+                            obj.direction = "up"
+                        elif obj.direction == "left":
+                            obj.direction = "right"
+                        elif obj.direction == "right":
+                            obj.direction = "left"
+            
+             
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
 lights = []

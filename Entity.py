@@ -11,7 +11,7 @@ class Entity(object):
         self.flipped = False
         self.speed = 3
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
-        self.keys = 1
+        self.keys = 0
         self.sight = []
     
     def setup(self, image):
@@ -112,7 +112,7 @@ class Entity(object):
         for obj in gb.objects.all_objects:
             if self.rect.colliderect(obj):
                 if obj.ID == 100:    #Chest + 1 key
-                    gb.maps.displayKey(obj)
+                    
                     self.keys += 1
                     gb.objects.all_objects.remove(obj)
     
@@ -154,6 +154,5 @@ class Enemy(Entity):
 
         line = gb.pygame.draw.line(gb.window.screen, (255, 0, 0), 
             start, end)
-
-
+  
         
