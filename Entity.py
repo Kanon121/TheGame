@@ -13,7 +13,9 @@ class Entity(object):
         self.flippedImage = gb.pygame.transform.flip(self.image, True, False)
         self.keys = 0
         self.sight = []
-    
+        self.hearts = 3
+        self.maxhearts = 3
+        self.previousHearts = 2
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
