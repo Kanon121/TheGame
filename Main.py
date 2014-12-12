@@ -50,6 +50,7 @@ while gb.playing:
     
     gb.player.render(gb.cam)
     gb.player.see(gb.maps.new_blocks)
+    gb.player.objCollision()
 
     gb.overlay.render()
 

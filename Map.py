@@ -282,7 +282,10 @@ def render():
 
 
     for obj in gb.objects.all_objects:
-        speed = 3
+        if not gb.edit.editing:
+            speed = 3
+        else:
+            speed = 1
         gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
             obj.rect.y - gb.cam.rect.y))       
        

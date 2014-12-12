@@ -15,7 +15,10 @@ class Entity(object):
         self.sight = []
         self.hearts = 3
         self.maxhearts = 3
-        self.previousHearts = 2
+        self.immune = False
+        self.immuneMax = 50
+        self.immuneCounter = self.immuneMax 
+    
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
@@ -110,15 +113,7 @@ class Entity(object):
                             'door_open1.png', False)
                         gb.maps.new_blocks.append(newblock)
 
-    
-        for obj in gb.objects.all_objects:
-            if self.rect.colliderect(obj):
-                if obj.ID == 100:    #Chest + 1 key
-                    
-                    self.keys += 1
-                    gb.objects.all_objects.remove(obj)
-    
-    
+
     
     def update(self, e):
         spx = self.speed
@@ -131,6 +126,44 @@ class Entity(object):
             self.move(-spx, 0)
         if e == "down":
             self.move(0, spy)
+    
+    
+    def objCollision(self):
+    
+
+        if self.hearts <= 0:
+            gb.playing = False
+
+
+    
+        if self.immune:
+            self.immuneCounter -= 1
+            if self.immuneCounter == 0:
+                self.immune = False
+                self.immuneCounter = self.immuneMax
+
+        for obj in gb.objects.all_objects:
+            if self.rect.colliderect(obj):
+                #CHESTS +1 KEY
+                if obj.ID == 100:     
+                    self.keys += 1
+                    gb.objects.all_objects.remove(obj)
+                # SPIKE BLOCKS
+                if obj.ID == 102:
+                    if not self.immune:
+                        self.hearts -= 1
+                        self.immune = True
+                if obj.ID == 103:
+                    if not self.immune:
+                        self.hearts -= 1
+                        self.immune = True
+
+
+
+
+
+
+
 
 class Enemy(Entity):
 
