@@ -7,6 +7,7 @@ class Editor():
         self.selected = gb.maps.all_block_types[0]
         self.mouseHover = True
         self.mode = "blocks"
+        self.pauseMoving = True
     def makeBlock(self, type):
         if type == "block":
             emptySpace = True
@@ -42,13 +43,16 @@ class Editor():
     
     def RunEditor(self):
         
+        
+        
         if self.mode == "blocks":
             ev = gb.pygame.event.get()
             for e in ev:
                 if e.type == gb.pygame.QUIT:
                     self.editing = False
                     
-                    
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_p:
+                    self.pauseMoving = not self.pauseMoving
                     
                 if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
                     self.mouseHover = not self.mouseHover
@@ -91,6 +95,7 @@ class Editor():
                             gb.maps.new_blocks.remove(block)
                 if self.draggingL:
                     self.makeBlock("block")            
+        
         else:
             
             ev = gb.pygame.event.get()
@@ -98,6 +103,10 @@ class Editor():
                 if e.type == gb.pygame.QUIT:
                     self.editing = False
                     self.Saving()
+                
+                if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_p:
+                    self.pauseMoving = not self.pauseMoving                
+                
                 if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_h:
                     self.mouseHover = not self.mouseHover
                 if e.type == gb.pygame.KEYDOWN and e.key == gb.pygame.K_c:
@@ -120,7 +129,7 @@ class Editor():
                         self.makeBlock("object")
                 
                         
-            
+        
         
         
         

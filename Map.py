@@ -202,7 +202,7 @@ def load():
         
         for block in new_blocks:
             if block[0] > 99:
-
+                
                 block = gb.objects.Objects(block[0], 
                     block[1], block[2], block[3])
                 objects.append(block)
@@ -216,11 +216,12 @@ def load():
                 block = Blocks(block[0],block[1],block[2],block[3],block[4])
                 new_blocks[i] = block
                 i += 1
+        
         for obj in objects:
-            if obj.ID == 102:
+            if obj.ID == 102: # spike UP / turret UP DOWN
                 obj.direction = "up"
-            if obj.ID == 103:
-                obj.direction = "left"
+            if obj.ID == 103 or 104:
+                obj.direction = "left" # spike LEFT / turret UP DOWN
             if obj in new_blocks:
                 new_blocks.remove(obj)
 
@@ -281,38 +282,7 @@ def render():
          
 
 
-    for obj in gb.objects.all_objects:
-        if not gb.edit.editing:
-            speed = 3
-        else:
-            speed = 1
-        gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
-            obj.rect.y - gb.cam.rect.y))       
-       
-    
-        if obj.ID == 102 or obj.ID == 103:
-            if obj.direction == "up":
-                obj.rect.y -= speed
-            elif obj.direction == "down":
-                obj.rect.y += speed
-            elif obj.direction == "right":
-                obj.rect.x += speed
-            elif obj.direction == "left":
-                obj.rect.x -= speed
-        
-
-        
-            for block in new_blocks:
-                if block.is_wall:
-                    if obj.rect.colliderect(block):
-                        if obj.direction == "up":
-                            obj.direction = "down"
-                        elif obj.direction == "down":
-                            obj.direction = "up"
-                        elif obj.direction == "left":
-                            obj.direction = "right"
-                        elif obj.direction == "right":
-                            obj.direction = "left"
+    gb.objects.UpdateObjects()
             
              
 
