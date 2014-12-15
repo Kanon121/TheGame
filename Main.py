@@ -52,8 +52,10 @@ while gb.playing:
     gb.player.see(gb.maps.new_blocks)
     gb.player.objCollision()
 
+    gb.projectiles.Update()
+    
     gb.overlay.render()
-
+    
 
     gb.pygame.display.flip()
     gb.window.RenderWindow('black')

@@ -35,7 +35,7 @@ from Camera import Camera
 import Map as maps
 import Objects as objects
 from Overlay import Overlay
-
+import Projectile as projectiles
 overlay = Overlay()
 
 

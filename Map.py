@@ -218,10 +218,16 @@ def load():
                 i += 1
         
         for obj in objects:
-            if obj.ID == 102: # spike UP / turret UP DOWN
+            if obj.ID == 102: # spike UP 
                 obj.direction = "up"
-            if obj.ID == 103 or 104:
-                obj.direction = "left" # spike LEFT / turret UP DOWN
+            if obj.ID == 103:
+                obj.direction = "left" # spike LEFT
+            if obj.ID == 104:
+                obj.makeTurret()
+                obj.direction = "left"
+            if obj.ID == 105:
+                obj.makeTurret()
+                obj.direction = "right"
             if obj in new_blocks:
                 new_blocks.remove(obj)
 
@@ -283,7 +289,7 @@ def render():
 
 
     gb.objects.UpdateObjects()
-            
+    gb.projectiles.Render()    
              
 
 ADJACENTS = ((1,0), (-1,0), (0,1), (0,-1), (1,1), (1, -1), (-1, 1), (-1, -1))    
