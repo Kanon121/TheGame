@@ -63,55 +63,7 @@ class Entity(object):
         self.rect.x += dx
         self.rect.y += dy
         
-        for block in gb.maps.new_blocks:
-            if self.rect.colliderect(block):
-                if block.is_wall:
-                    if dx > 0:
-                        self.rect.right = block.rect.left
-                    if dx < 0:
-                        self.rect.left = block.rect.right
-                    if dy > 0:
-                        self.rect.bottom = block.rect.top
-                    if dy < 0:
-                        self.rect.top = block.rect.bottom
-                    
-                
-                #block.ID 3 is stairs down
-                if block.ID == 3:
-                   gb.onLevel += 1
-                   gb.mapName = 'level' + str(gb.onLevel) + '.level'
-                   gb.LoadGame()
-                   gb.MovePlayer()
-                
-
-                # Closed door 2
-                if block.ID == 7: 
-                    gb.maps.new_blocks.remove(block)
-                    newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 
-                        'door_open2.png', False)
-                    gb.maps.new_blocks.append(newblock)
-                # Closed door 1
-                if block.ID == 8:
-                    gb.maps.new_blocks.remove(block)
-                    newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 
-                        'door_open1.png', False)
-                    gb.maps.new_blocks.append(newblock)
-                # locked door 1
-                if block.ID == 9:
-                    if self.keys:
-                        self.keys -= 1
-                        gb.maps.new_blocks.remove(block)
-                        newblock = gb.maps.Blocks(5, block.rect.x, block.rect.y, 
-                            'door_open2.png', False)
-                        gb.maps.new_blocks.append(newblock)
-                # locked door 2
-                if block.ID == 10:
-                    if self.keys:
-                        self.keys -= 1
-                        gb.maps.new_blocks.remove(block)
-                        newblock = gb.maps.Blocks(6, block.rect.x, block.rect.y, 
-                            'door_open1.png', False)
-                        gb.maps.new_blocks.append(newblock)
+        gb.maps.checkCollisions(self, "player", dx, dy)
 
 
     

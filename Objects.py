@@ -21,8 +21,10 @@ class Objects():
         self.rect.x = x
         self.rect.y = y
         self.direction = direction
-      
-   
+
+    def __str__(self):
+        return "{} , {}".format(self.direction, self.ID)
+        
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
@@ -33,16 +35,14 @@ class Objects():
         self.reloadTime = 50
         self.type = "arrow"
 
-    def shootTurret(self):
-        self.reloading = True
-        self.reloadTime = 100
-        arrow = "arrow_projectile.png"
-        x, y, = self.rect.center
-        if self.direction == "left":
-            gb.projectiles.Projectile(arrow, x, y, "left")
-        if self.direction == "right":
-            gb.projectiles.Projectile(arrow, x, y, "right")
-    
+def shootTurret(obj):
+    obj.reloading = True
+    obj.reloadTime = 100
+    arrow = "arrow_projectile.png"
+    x, y, = obj.rect.center
+    gb.projectiles.Projectile(arrow, x, y, obj.direction)
+
+        
 def inherent(selected, x, y):
     obj = Objects(selected.ID, selected.pic, x, y)
     if obj.ID == 102:
@@ -60,7 +60,7 @@ def inherent(selected, x, y):
         obj.makeTurret()
     if obj.ID == 107:
         obj.direction = "down"
-        obj.makeTurret()        
+        obj.makeTurret()
         
     return obj
 
@@ -71,53 +71,33 @@ def turretDetect(obj):
         if obj.direction == "left":
             if gb.player.rect.x < obj.rect.x:   
                 if gb.player.rect.y < (obj.rect.y + offset) and gb.player.rect.y > (obj.rect.y - offset):
-                    obj.shootTurret()
+                    shootTurret(obj)
 
-        if obj.direction == "right":
+        elif obj.direction == "right":
             if gb.player.rect.x > obj.rect.x:
                 if gb.player.rect.y < (obj.rect.y + offset) and gb.player.rect.y > (obj.rect.y - offset):
-                    obj.shootTurret()
-                    print "right"
-        if obj.direction == "up":
-            pass 
-        if obj.direction =="down":
-            pass
+                    shootTurret(obj)
+        
+        elif obj.direction == "up":
+            if gb.player.rect.y < obj.rect.y:
+                if gb.player.rect.x < (obj.rect.x + offset) and gb.player.rect.x > (obj.rect.x - offset):
+                    shootTurret(obj)
+                    
+        
+        elif obj.direction == "down":
+            if gb.player.rect.y > obj.rect.y:
+                if gb.player.rect.x < (obj.rect.x + offset) and gb.player.rect.x > (obj.rect.x - offset):
+                    shootTurret(obj)
             
     
 
 def UpdateObjects():
     for obj in gb.objects.all_objects:
-        if not gb.edit.editing:
-            speed = 3
-        else:
-            if not gb.edit.pauseMoving:
-                speed = 0
-            else:
-                speed = 1
+
         gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
             obj.rect.y - gb.cam.rect.y))       
        
-        if obj.ID == 102 or obj.ID == 103:
-            if obj.direction == "up":
-                obj.rect.y -= speed
-            elif obj.direction == "down":
-                obj.rect.y += speed
-            elif obj.direction == "right":
-                obj.rect.x += speed
-            elif obj.direction == "left":
-                obj.rect.x -= speed
-        
-            for block in gb.maps.new_blocks:
-                if block.is_wall:
-                    if obj.rect.colliderect(block):
-                        if obj.direction == "up":
-                            obj.direction = "down"
-                        elif obj.direction == "down":
-                            obj.direction = "up"
-                        elif obj.direction == "left":
-                            obj.direction = "right"
-                        elif obj.direction == "right":
-                            obj.direction = "left" 
+        gb.maps.checkCollisions(obj, "object")
 
         if obj.ID >= 104  and obj.ID <= 107:
             if obj.reloading:
@@ -155,14 +135,14 @@ def GetTypes():
                 turretLeft = Objects(104, 'turretleft.png', 100, 100, direction="left")
                 all_object_types.append(turretLeft)
             if obj == "R":
-                turretLeft = Objects(105, 'turretright.png', 100, 100, direction="right")
-                all_object_types.append(turretLeft)
+                turretRight = Objects(105, 'turretright.png', 100, 100, direction="right")
+                all_object_types.append(turretRight)
             if obj == "U":
-                turretLeft = Objects(106, 'turretup.png', 100, 100, direction="up")
-                all_object_types.append(turretLeft)                
+                turretUp = Objects(106, 'turretup.png', 100, 100, direction="up")
+                all_object_types.append(turretUp)                
             if obj == "D":
-                turretLeft = Objects(107, 'turretdown.png', 100, 100, direction="down")
-                all_object_types.append(turretLeft)                
+                turretDown = Objects(107, 'turretdown.png', 100, 100, direction="down")
+                all_object_types.append(turretDown)                
                 
                 
                 

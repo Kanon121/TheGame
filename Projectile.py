@@ -17,6 +17,10 @@ class Projectile():
             self.image = gb.pygame.transform.rotate(self.image, 90)
         if self.direction == "right":
             self.image = gb.pygame.transform.rotate(self.image, -90)
+        if self.direction == "up":
+            pass # Image faces up by defualt
+        if self.direction == "down":
+            self.image = gb.pygame.transform.rotate(self.image, 180)
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
@@ -29,7 +33,10 @@ def Update():
                 pro.rect.x -= pro.speed
             if pro.direction == "right":
                 pro.rect.x += pro.speed
-    
+            if pro.direction == "up":
+                pro.rect.y -= pro.speed
+            if pro.direction == "down":
+                pro.rect.y += pro.speed
 def Render():
     for pro in all_projectiles:
     

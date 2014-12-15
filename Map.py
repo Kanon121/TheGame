@@ -218,23 +218,119 @@ def load():
                 i += 1
         
         for obj in objects:
-            if obj.ID == 102: # spike UP 
+            # SPIKES
+            if obj.ID == 102: 
                 obj.direction = "up"
             if obj.ID == 103:
-                obj.direction = "left" # spike LEFT
-            if obj.ID == 104:
+                obj.direction = "left" 
+            #TURRETS
+            if obj.ID == 104: 
                 obj.makeTurret()
                 obj.direction = "left"
             if obj.ID == 105:
                 obj.makeTurret()
                 obj.direction = "right"
+            if obj.ID == 106:
+                obj.makeTurret()
+                obj.direction = "up"           
+            if obj.ID == 107:
+                obj.makeTurret()
+                obj.direction = "down"            
+            
             if obj in new_blocks:
                 new_blocks.remove(obj)
 
         return [new_blocks, gb.player.rect, objects]      
         
 
+        
+def checkCollisions(thing, type, dx=0, dy=0):
+    if not gb.edit.editing:
+        speed = 3
+    else:
+        if not gb.edit.pauseMoving:
+            speed = 0
+        else:
+            speed = 1
     
+    if type == "object":
+        obj = thing
+        if obj.ID == 102 or obj.ID == 103:
+            if obj.direction == "up":
+                obj.rect.y -= speed
+            elif obj.direction == "down":
+                obj.rect.y += speed
+            elif obj.direction == "right":
+                obj.rect.x += speed
+            elif obj.direction == "left":
+                obj.rect.x -= speed
+    
+    excluded = [104, 105, 106, 107]
+    for block in new_blocks:
+        if type == "object":
+            if block.is_wall:
+                if obj.ID not in excluded:
+                    if obj.rect.colliderect(block):
+                        if obj.direction == "up":
+                            obj.direction = "down"
+                        elif obj.direction == "down":
+                            obj.direction = "up"
+                        elif obj.direction == "left":
+                            obj.direction = "right"
+                        elif obj.direction == "right":
+                            obj.direction = "left"         
+       
+        if type == "player":
+            if gb.player.rect.colliderect(block):
+                if block.is_wall:
+                    if dx > 0:
+                        gb.player.rect.right = block.rect.left
+                    if dx < 0:
+                        gb.player.rect.left = block.rect.right
+                    if dy > 0:
+                        gb.player.rect.bottom = block.rect.top
+                    if dy < 0:
+                        gb.player.rect.top = block.rect.bottom
+
+                #block.ID 3 is stairs down
+                if block.ID == 3:
+                    gb.onLevel += 1
+                    gb.mapName = 'level' + str(gb.onLevel) + '.level'
+                    gb.LoadGame()
+                    gb.MovePlayer()
+
+                # Closed door 2
+                if block.ID == 7: 
+                    new_blocks.remove(block)
+                    newblock = Blocks(5, block.rect.x, block.rect.y, 
+                        'door_open2.png', False)
+                    new_blocks.append(newblock)
+               
+               # Closed door 1
+                if block.ID == 8:
+                    new_blocks.remove(block)
+                    newblock = Blocks(6, block.rect.x, block.rect.y, 
+                        'door_open1.png', False)
+                    new_blocks.append(newblock)
+               
+               # locked door 1
+                if block.ID == 9:
+                    if gb.player.keys:
+                        gb.player.keys -= 1
+                        new_blocks.remove(block)
+                        newblock = Blocks(5, block.rect.x, block.rect.y, 
+                            'door_open2.png', False)
+                        new_blocks.append(newblock)
+                
+                # locked door 2
+                if block.ID == 10:
+                    if gb.player.keys:
+                        gb.player.keys -= 1
+                        new_blocks.remove(block)
+                        newblock = Blocks(6, block.rect.x, block.rect.y, 
+                            'door_open1.png', False)
+                        new_blocks.append(newblock)       
+
 def getAdjacents(source, door):
     open = []
     for adjacent in source:
