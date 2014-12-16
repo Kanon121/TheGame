@@ -3,6 +3,7 @@ from Window import Window
 import sys
 import os
 import random
+
 playing = True
 editing = False
 reloadGame = False

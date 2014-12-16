@@ -38,10 +38,17 @@ class Objects():
 def shootTurret(obj):
     obj.reloading = True
     obj.reloadTime = 100
-    arrow = "arrow_projectile.png"
     x, y, = obj.rect.center
-    gb.projectiles.Projectile(arrow, x, y, obj.direction)
+    if obj.direction == "up":
+        gb.projectiles.Projectile("arrow_projectile.png", x, y, "up")
+    if obj.direction == "down":
+        gb.projectiles.Projectile("arrow_projectile_down.png", x, y, "down")
+    if obj.direction == "left":
+        gb.projectiles.Projectile("arrow_projectile_left.png", x, y, "left")        
+    if obj.direction == "right":
+        gb.projectiles.Projectile("arrow_projectile_right.png", x, y, "right")
 
+        
         
 def inherent(selected, x, y):
     obj = Objects(selected.ID, selected.pic, x, y)

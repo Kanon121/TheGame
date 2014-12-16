@@ -9,26 +9,22 @@ class Projectile():
         self.direction = direction
         self.speed = 15
         all_projectiles.append(self)
-        self.rotateImage()
         self.rect.x = x
         self.rect.y = y
-    def rotateImage(self):
-        if self.direction == "left":
-            self.image = gb.pygame.transform.rotate(self.image, 90)
-        if self.direction == "right":
-            self.image = gb.pygame.transform.rotate(self.image, -90)
-        if self.direction == "up":
-            pass # Image faces up by defualt
-        if self.direction == "down":
-            self.image = gb.pygame.transform.rotate(self.image, 180)
+        self.flying = False
+    
+
+    
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
         
    
 def Update():
+
     if all_projectiles:
         for pro in all_projectiles:
+            gb.maps.checkCollisions(pro, "projectile")
             if pro.direction == "left":
                 pro.rect.x -= pro.speed
             if pro.direction == "right":

@@ -252,7 +252,8 @@ def checkCollisions(thing, type, dx=0, dy=0):
             speed = 0
         else:
             speed = 1
-    
+    if type == "projectile":
+        proj = thing
     if type == "object":
         obj = thing
         if obj.ID == 102 or obj.ID == 103:
@@ -279,7 +280,23 @@ def checkCollisions(thing, type, dx=0, dy=0):
                             obj.direction = "right"
                         elif obj.direction == "right":
                             obj.direction = "left"         
-       
+        
+        if type == "projectile":
+            if proj.rect.colliderect(gb.player.rect):
+                if proj in gb.projectiles.all_projectiles:
+                    gb.projectiles.all_projectiles.remove(proj)
+                if not gb.player.immune:
+                    gb.player.hearts -= 1
+                    gb.player.immune = True
+            
+            if block.is_wall:
+                if not proj.rect.colliderect(block):
+                    proj.flying = True
+                if proj.flying:
+                    if proj.rect.colliderect(block):
+                        gb.projectiles.all_projectiles.remove(proj)
+
+        
         if type == "player":
             if gb.player.rect.colliderect(block):
                 if block.is_wall:

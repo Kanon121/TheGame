@@ -80,6 +80,7 @@ class Entity(object):
             self.move(0, spy)
     
     
+    # MOVE THIS TO MAPS FUNCTION
     def objCollision(self):
     
 
