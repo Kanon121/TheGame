@@ -21,6 +21,8 @@ class Objects():
         self.rect.x = x
         self.rect.y = y
         self.direction = direction
+        self.location = (self.rect.x / 50 ,self.rect.y / 50)
+        self.seen = False
 
     def __str__(self):
         return "{} , {}".format(self.direction, self.ID)
@@ -38,14 +40,18 @@ class Objects():
 def shootTurret(obj):
     obj.reloading = True
     obj.reloadTime = 100
-    x, y, = obj.rect.center
+    #x, y, = obj.rect.center
     if obj.direction == "up":
+        x,y = obj.rect.midtop
         gb.projectiles.Projectile("arrow_projectile.png", x, y, "up")
     if obj.direction == "down":
+        x,y = obj.rect.midbottom
         gb.projectiles.Projectile("arrow_projectile_down.png", x, y, "down")
     if obj.direction == "left":
+        x,y = obj.rect.midleft
         gb.projectiles.Projectile("arrow_projectile_left.png", x, y, "left")        
     if obj.direction == "right":
+        x,y, = obj.rect.midright
         gb.projectiles.Projectile("arrow_projectile_right.png", x, y, "right")
 
         
@@ -100,9 +106,8 @@ def turretDetect(obj):
 
 def UpdateObjects():
     for obj in gb.objects.all_objects:
-
-        gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,
-            obj.rect.y - gb.cam.rect.y))       
+        if obj.seen or gb.editing:
+            gb.window.screen.blit(obj.image, (obj.rect.x - gb.cam.rect.x,obj.rect.y - gb.cam.rect.y))       
        
         gb.maps.checkCollisions(obj, "object")
 

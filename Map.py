@@ -265,9 +265,10 @@ def checkCollisions(thing, type, dx=0, dy=0):
                 obj.rect.x += speed
             elif obj.direction == "left":
                 obj.rect.x -= speed
-    
-    excluded = [104, 105, 106, 107]
+
+    excluded = [104, 105, 106, 107] #turrets excluded from main check - they dont move 
     for block in new_blocks:
+
         if type == "object":
             if block.is_wall:
                 if obj.ID not in excluded:
@@ -279,7 +280,18 @@ def checkCollisions(thing, type, dx=0, dy=0):
                         elif obj.direction == "left":
                             obj.direction = "right"
                         elif obj.direction == "right":
-                            obj.direction = "left"         
+                            obj.direction = "left" 
+            if obj.rect.colliderect(block):
+                if block.seen:
+                    obj.seen = True
+                
+            if obj.ID in excluded:
+                for (i, j) in ADJACENTS:
+                    check = (obj.location[0]+i, obj.location[1]+j)
+                    if check == block.location:
+                        if block.seen:
+                            obj.seen = True
+        
         
         if type == "projectile":
             if proj.rect.colliderect(gb.player.rect):

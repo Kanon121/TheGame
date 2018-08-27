@@ -22,6 +22,9 @@ class Entity(object):
     def setup(self, image):
         img_file = os.path.join('img', image)
         self.image = gb.pygame.image.load(img_file)
+        self.immuneSurf = gb.pygame.Surface((800,800))
+        self.immuneSurf.set_alpha(128)
+        
     
     def render(self, cam):
         if self.flipped == True:
@@ -91,9 +94,13 @@ class Entity(object):
     
         if self.immune:
             self.immuneCounter -= 1
+            self.immuneSurf.fill((255,0,0))
+            self.immuneSurf.set_alpha(self.immuneCounter)
+            gb.window.screen.blit(self.immuneSurf, (0,0))
             if self.immuneCounter == 0:
                 self.immune = False
                 self.immuneCounter = self.immuneMax
+
 
         for obj in gb.objects.all_objects:
             if self.rect.colliderect(obj):
